@@ -4,13 +4,18 @@ import {
   editJurusan,
 } from "../service/jurusanService.js";
 
-async function presentJurusan() {
-  const result = await showJurusan();
+async function presentJurusan(req, res, next) {
+  try {
+    const result = await showJurusan();
 
-  return res.status(200).json({
-    status: 200,
-    data: result,
-  });
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (error) {
+    console.log(err);
+    next(err);
+  }
 }
 
 async function newJurusan(req, res, next) {
