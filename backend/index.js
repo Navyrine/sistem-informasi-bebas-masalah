@@ -2,8 +2,9 @@ import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import jurusanRouter from "./src/route/jurusanRoute.js";
 import errorHandler from "./src/middleware/errorHandle.js";
+import jurusanRouter from "./src/route/jurusanRoute.js";
+import prodiRouter from "./src/route/prodiRoute.js";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/", jurusanRouter);
+app.use("/", prodiRouter);
 
 app.use(errorHandler);
 app.listen(3000, () => {
