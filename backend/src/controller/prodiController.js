@@ -82,3 +82,5 @@ async function remove(req, res, next) {
     next(err);
   }
 }
+
+export { presentProdi, presentProdibyId, newProdi, changeProdi, remove };
