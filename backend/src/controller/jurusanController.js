@@ -2,7 +2,7 @@ import {
   showJurusan,
   saveJurusan,
   editJurusan,
-} from "../service/jurusanService";
+} from "../service/jurusanService.js";
 
 async function presentJurusan() {
   const result = await showJurusan();

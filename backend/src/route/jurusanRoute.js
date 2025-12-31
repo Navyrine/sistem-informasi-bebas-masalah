@@ -3,7 +3,7 @@ import {
   presentJurusan,
   newJurusan,
   changeJurusan,
-} from "../controller/jurusanController";
+} from "../controller/jurusanController.js";
 
 const jurusanRouter = express.Router();
 

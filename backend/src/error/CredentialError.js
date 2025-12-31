@@ -1,6 +1,6 @@
-import CustomError from "./CustomError";
+import CustomError from "./CustomError.js";
 
-class CredentialError {
+class CredentialError extends CustomError {
   constructor(message = "Credential") {
     super(message, 401);
   }

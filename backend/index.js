@@ -2,8 +2,8 @@ import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import jurusanRouter from "./src/route/jurusanRoute";
-import errorHandler from "./src/middleware/errorHandle";
+import jurusanRouter from "./src/route/jurusanRoute.js";
+import errorHandler from "./src/middleware/errorHandle.js";
 
 const app = express();
 

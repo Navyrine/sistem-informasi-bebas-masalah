@@ -1,4 +1,8 @@
-import { getJurusan, addJurusan, updatJurusan } from "../model/jurusanModel.js";
+import {
+  getJurusan,
+  addJurusan,
+  updateJurusan,
+} from "../model/jurusanModel.js";
 import ConflictError from "../error/ConflictError.js";
 import BadRequetError from "../error/BadRequestError.js";
 
@@ -39,7 +43,7 @@ async function editJurusan(id_jurusan, nama_jurusan) {
     nama_jurusan = nama_jurusan.trim();
   }
 
-  await updatJurusan(id_jurusan, nama_jurusan);
+  await updateJurusan(id_jurusan, nama_jurusan);
 }
 
 export { showJurusan, saveJurusan, editJurusan };
