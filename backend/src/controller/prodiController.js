@@ -1,12 +1,10 @@
-import BadRequestError from "../error/BadRequestError";
-import ConflictError from "../error/ConflictError";
 import {
   showProdi,
   showProdibyId,
   saveProdi,
   editProdi,
   removeProdi,
-} from "../service/prodiService";
+} from "../service/prodiService.js";
 
 async function presentProdi(req, res, next) {
   try {

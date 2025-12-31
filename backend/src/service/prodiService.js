@@ -1,12 +1,12 @@
-import ConflictError from "../error/ConflictError";
-import BadRequestError from "../error/BadRequestError";
+import ConflictError from "../error/ConflictError.js";
+import BadRequestError from "../error/BadRequestError.js";
 import {
   getProdi,
   addProdi,
   getProdiById,
   updateProdi,
   deleteProdi,
-} from "../model/prodiModel";
+} from "../model/prodiModel.js";
 
 async function showProdi() {
   const result = await getProdi();

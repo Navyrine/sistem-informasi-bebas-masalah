@@ -5,7 +5,7 @@ import {
   newProdi,
   changeProdi,
   remove,
-} from "../controller/prodiController";
+} from "../controller/prodiController.js";
 
 const prodiRouter = express.Router();
 
