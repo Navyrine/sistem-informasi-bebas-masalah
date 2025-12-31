@@ -8,7 +8,7 @@ import {
 
 async function presentProdi(req, res, next) {
   try {
-    const result = showProdi();
+    const result = await showProdi();
 
     return res.status(200).json({
       status: 200,

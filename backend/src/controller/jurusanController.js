@@ -1,5 +1,7 @@
 import {
   showJurusan,
+  showJurusanId,
+  showAllNamaJurusan,
   saveJurusan,
   editJurusan,
 } from "../service/jurusanService.js";
@@ -13,6 +15,33 @@ async function presentJurusan(req, res, next) {
       data: result,
     });
   } catch (error) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentJurusanId(req, res, next) {
+  try {
+    const nama_jurusan = req.body.nama_jurusan;
+
+    if (typeof nama_jurusan === "string") {
+      nama_jurusan = nama_jurusan.toLowerCase().trim();
+    }
+
+    const result = await showJurusanId(nama_jurusan);
+    return result;
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentAllNamaJurusan(req, res, next) {
+  try {
+    const result = await showAllNamaJurusan();
+
+    return result;
+  } catch (err) {
     console.log(err);
     next(err);
   }
