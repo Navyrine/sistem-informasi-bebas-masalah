@@ -22,13 +22,11 @@ async function addProdi(id_jurusan, nama_prodi) {
 }
 
 async function getProdiById(id_prodi) {
-  const jurusanQuery = await sibema.query(
-    "SELECT id_jurusan, nama_jurusan FROM jurusan"
-  );
   const prodiQuery = await sibema.query(
     `
         SELECT 
         prodi.id_prodi,
+        jurusan.id_jurusan,
         nama_jurusan,
         nama_prodi
         FROM prodi
@@ -37,14 +35,9 @@ async function getProdiById(id_prodi) {
     `,
     [id_prodi]
   );
-
-  const jurusanResult = jurusanQuery.rows;
   const prodiResult = prodiQuery.rows[0];
 
-  return {
-    jurusan: jurusanResult,
-    prodi: prodiResult,
-  };
+  return prodiResult;
 }
 
 async function updateProdi(nama_jurusan, id_prodi, nama_prodi) {

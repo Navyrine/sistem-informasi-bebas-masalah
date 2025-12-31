@@ -51,12 +51,16 @@ async function showProdibyId(id_prodi) {
   }
 
   const result = await getProdiById(id_prodi);
+  const jurusanResult = await getAllNamaJurusan();
 
-  if (result.length === 0) {
+  if (result === undefined || result.length === 0) {
     throw new ConflictError("Data prodi tidak ditemukan");
   }
 
-  return result;
+  return {
+    jurusan: jurusanResult,
+    prodi: result,
+  };
 }
 
 async function editProdi(nama_jurusan, id_prodi, nama_prodi) {

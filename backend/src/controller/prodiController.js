@@ -23,7 +23,7 @@ async function presentProdi(req, res, next) {
 async function presentProdibyId(req, res, next) {
   try {
     const id_prodi = req.params.id_prodi;
-    const result = showProdibyId(id_prodi);
+    const result = await showProdibyId(id_prodi);
 
     return res.status(200).json({
       status: 200,
