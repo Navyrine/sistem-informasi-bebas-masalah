@@ -9,6 +9,6 @@ const jurusanRouter = express.Router();
 
 jurusanRouter.get("/jurusan", presentJurusan);
 jurusanRouter.post("/jurusan", newJurusan);
-jurusanRouter.put("/jurusan", changeJurusan);
+jurusanRouter.put("/jurusan/:id_jurusan", changeJurusan);
 
 export default jurusanRouter;
