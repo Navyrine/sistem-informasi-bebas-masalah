@@ -19,3 +19,5 @@ async function updateJurusan(id_jurusan, nama_jurusan) {
     [nama_jurusan, id_jurusan]
   );
 }
+
+export { getJurusan, addJurusan, updateJurusan };
