@@ -1,7 +1,5 @@
 import {
   getJurusan,
-  getJurusanId,
-  getAllNamaJurusan,
   addJurusan,
   updateJurusan,
 } from "../model/jurusanModel.js";
@@ -13,26 +11,6 @@ async function showJurusan() {
 
   if (result.length === 0) {
     throw new ConflictError("Data kosong");
-  } else {
-    return result;
-  }
-}
-
-async function showJurusanId(nama_jurusan) {
-  const result = await getJurusanId(nama_jurusan);
-
-  if (result.length === 0) {
-    throw new ConflictError("Id jurusan tidak ditemukan");
-  } else {
-    return result;
-  }
-}
-
-async function showAllNamaJurusan() {
-  const result = await getAllNamaJurusan();
-
-  if (result.length === 0) {
-    throw new ConflictError("Nama jurusan tidak ditemukan");
   } else {
     return result;
   }
@@ -68,10 +46,4 @@ async function editJurusan(id_jurusan, nama_jurusan) {
   await updateJurusan(id_jurusan, nama_jurusan);
 }
 
-export {
-  showJurusan,
-  showJurusanId,
-  showAllNamaJurusan,
-  saveJurusan,
-  editJurusan,
-};
+export { showJurusan, saveJurusan, editJurusan };

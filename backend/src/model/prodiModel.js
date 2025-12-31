@@ -14,13 +14,7 @@ async function getProdi() {
   return result;
 }
 
-async function addProdi(nama_jurusan, nama_prodi) {
-  const jurusanQuery = await sibema.query(
-    "SELECT id_jurusan FROM jurusan WHERE LOWER (nama_jurusan) = $1",
-    [nama_jurusan]
-  );
-  const id_jurusan = jurusanQuery.rows[0].id_jurusan;
-
+async function addProdi(id_jurusan, nama_prodi) {
   await sibema.query(
     "INSERT INTO prodi (id_jurusan, nama_prodi) VALUES ($1, $2)",
     [id_jurusan, nama_prodi]

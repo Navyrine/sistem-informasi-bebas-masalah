@@ -1,5 +1,6 @@
 import ConflictError from "../error/ConflictError.js";
 import BadRequestError from "../error/BadRequestError.js";
+import { getJurusanId, getAllNamaJurusan } from "../model/jurusanModel.js";
 import {
   getProdi,
   addProdi,
@@ -19,6 +20,8 @@ async function showProdi() {
 }
 
 async function saveProdi(nama_jurusan, nama_prodi) {
+  const jurusanId = await getJurusanId(nama_jurusan);
+
   if (!nama_jurusan || !nama_prodi) {
     throw new BadRequestError("Nama jurusan atau nama prodi wajib diisi");
   }
@@ -31,7 +34,15 @@ async function saveProdi(nama_jurusan, nama_prodi) {
     nama_prodi = nama_prodi.trim();
   }
 
-  await addProdi(nama_jurusan, nama_prodi);
+  if (jurusanId === undefined) {
+    throw new ConflictError("Jurusan tidak ditemukan");
+  }
+
+  if (typeof jurusanId.id_jurusan === "string") {
+    jurusanId = parseInt(jurusanId);
+  }
+
+  await addProdi(jurusanId.id_jurusan, nama_prodi);
 }
 
 async function showProdibyId(id_prodi) {

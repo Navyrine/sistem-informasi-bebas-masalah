@@ -10,7 +10,7 @@ async function getJurusan() {
 async function getJurusanId(nama_jurusan) {
   const query = await sibema.query(
     "SELECT id_jurusan FROM jurusan WHERE LOWER(nama_jurusan) = $1",
-    nama_jurusan
+    [nama_jurusan]
   );
   const result = query.rows[0];
 
