@@ -29,7 +29,14 @@ async function showMahasiswaById(idMhs) {
   return result;
 }
 
-async function newMahasiswa(prodiId, nim, namaMhs, noTelp, alamat, tahunLulus) {
+async function saveMahasiswa(
+  prodiId,
+  nim,
+  namaMhs,
+  noTelp,
+  alamat,
+  tahunLulus
+) {
   const existingProdi = await getProdiId(id_prodi);
 
   if (!existingProdi) {
@@ -113,7 +120,7 @@ async function editMahasiswa(idMhs, updateBody) {
   await updateProdi(prodiId, updateData);
 }
 
-async function removeMhs(mhsId) {
+async function removeMahasiswa(mhsId) {
   mhsId = parseInt(mhsId);
 
   await deleteMahasiswa(mhsId);
@@ -122,7 +129,7 @@ async function removeMhs(mhsId) {
 export {
   showMahasiswa,
   showMahasiswaById,
-  newMahasiswa,
+  saveMahasiswa,
   editMahasiswa,
-  removeMhs,
+  removeMahasiswa,
 };
