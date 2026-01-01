@@ -59,16 +59,18 @@ async function addMahasiswa(idProdi, nim, namaMhs, noTelp, alamat, tahunLulus) {
 async function updateMahasiswa(idMhs, updateBody) {
   await sibema.query(
     `
-        UPDATE SET
+        UPDATE mahasiswa SET
         id_prodi = $1,
-        nama_mhs = $2,
-        no_telp = $3,
-        alamat = $4,
-        tahun_lulus = $5
-        WHERE id_mhs = $6    
+        nim = $2,
+        nama_mhs = $3,
+        no_telp = $4,
+        alamat = $5,
+        tahun_lulus = $6
+        WHERE id_mhs = $7    
     `,
     [
       updateBody.id_prodi,
+      updateBody.nim,
       updateBody.nama_mhs,
       updateBody.no_telp,
       updateBody.alamat,

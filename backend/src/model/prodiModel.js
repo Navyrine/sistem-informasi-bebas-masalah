@@ -16,7 +16,7 @@ async function getProdi() {
 
 async function getProdiId(namaProdi) {
   const query = await sibema.query(
-    "SELECT id_prodi FROM prodi WHERE LOWER(nama_prodi = $1)",
+    "SELECT id_prodi FROM prodi WHERE LOWER(nama_prodi) = $1",
     [namaProdi]
   );
   const result = query.rows[0];

@@ -68,8 +68,7 @@ async function editProdi(id_prodi, updateBody) {
     updateBody.nama_prodi = updateBody.nama_prodi.trim();
   }
 
-  const jurusanId = existingProdi.id_jurusan;
-  console.log(jurusanId);
+  let jurusanId = existingProdi.id_jurusan;
 
   if (updateBody.nama_jurusan) {
     const jurusan = await getJurusanId(updateBody.nama_jurusan);

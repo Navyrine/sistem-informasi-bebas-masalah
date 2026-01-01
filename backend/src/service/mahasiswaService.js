@@ -30,29 +30,23 @@ async function showMahasiswaById(idMhs) {
 }
 
 async function saveMahasiswa(
-  prodiId,
+  namaProdi,
   nim,
   namaMhs,
   noTelp,
   alamat,
   tahunLulus
 ) {
-  const existingProdi = await getProdiId(id_prodi);
-
-  if (!existingProdi) {
-    throw new ConflictError("Data prodi tidak ditemukan");
-  }
-
-  if (!prodiId) {
-    throw new BadRequestError("Id prodi tidak boleh kosong");
-  }
-
   if (!nim) {
     throw new BadRequestError("Nim tidak boleh kosong");
   }
 
   if (nim.length > 10) {
-    throw new BadRequestError("Panjang nim telepon tidak boleh lebih dari 13");
+    throw new BadRequestError("Panjang nim tidak boleh lebih dari 10");
+  }
+
+  if (!namaProdi) {
+    throw new BadRequestError("Nama prodi tidak boleh kosong");
   }
 
   if (!namaMhs) {
@@ -79,10 +73,24 @@ async function saveMahasiswa(
 
   nim = nim.trim();
   namaMhs = namaMhs.trim();
+  namaProdi = namaProdi.toLowerCase().trim();
   noTelp = noTelp.trim();
   alamat = alamat.trim();
 
-  await addMahasiswa(prodiId, nim, namaMhs, noTelp, alamat);
+  const prodiId = await getProdiId(namaProdi);
+  console.log(prodiId);
+  if (!prodiId) {
+    throw new ConflictError("Data prodi tidak ditemukan");
+  }
+
+  await addMahasiswa(
+    prodiId.id_prodi,
+    nim,
+    namaMhs,
+    noTelp,
+    alamat,
+    tahunLulus
+  );
 }
 
 async function editMahasiswa(idMhs, updateBody) {
@@ -92,13 +100,13 @@ async function editMahasiswa(idMhs, updateBody) {
     throw new ConflictError("Data mahasiswa tidak ditemukan");
   }
 
-  updateBody.nama_prodi = updateBody.nama_prodi.toLowerCase().trim();
-  updateBody.nim = updateBody.nim.trim();
-  updateBody.nama_mhs = updateBody.nama_mhs.trim();
-  updateBody.no_telp = updateBody.no_telp.trim();
-  updateBody.alamat = updateBody.alamat.trim();
+  updateBody.nama_prodi = updateBody.nama_prodi?.toLowerCase().trim();
+  updateBody.nim = updateBody.nim?.trim();
+  updateBody.nama_mhs = updateBody.nama_mhs?.trim();
+  updateBody.no_telp = updateBody.no_telp?.trim();
+  updateBody.alamat = updateBody.alamat?.trim();
 
-  const prodiId = existingMhs.id_prodi;
+  let prodiId = existingMhs.id_prodi;
 
   if (updateBody.nama_prodi) {
     const prodi = await getProdiId(updateBody.nama_prodi);
@@ -111,13 +119,14 @@ async function editMahasiswa(idMhs, updateBody) {
 
   const updateData = {
     id_prodi: prodiId,
-    nim_mhs: updateBody.nim ?? existingMhs.nim,
+    nim: updateBody.nim ?? existingMhs.nim,
     nama_mhs: updateBody.nama_mhs ?? existingMhs.nama_mhs,
     no_telp: updateBody.no_telp ?? existingMhs.no_telp,
     alamat: updateBody.alamat ?? existingMhs.alamat,
+    tahun_lulus: updateBody.tahun_lulus ?? existingMhs.tahun_lulus,
   };
 
-  await updateProdi(prodiId, updateData);
+  await updateMahasiswa(idMhs, updateData);
 }
 
 async function removeMahasiswa(mhsId) {

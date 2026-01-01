@@ -37,9 +37,17 @@ async function presentMahsiswaById(req, res, next) {
 
 async function newMahasiswa(req, res, next) {
   try {
-    const { nama_prodi, nim, nama_mhs, no_telp, alamat } = req.body;
+    const { nama_prodi, nim, nama_mhs, no_telp, alamat, tahun_lulus } =
+      req.body;
 
-    await saveMahasiswa(nama_prodi, nim, nama_mhs, no_telp, alamat);
+    await saveMahasiswa(
+      nama_prodi,
+      nim,
+      nama_mhs,
+      no_telp,
+      alamat,
+      tahun_lulus
+    );
     return res.status(201).json({
       status: 201,
       message: "Berhasil menambahkan data mahasiswa",
