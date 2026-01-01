@@ -14,6 +14,16 @@ async function getProdi() {
   return result;
 }
 
+async function getProdiId(namaProdi) {
+  const query = await sibema.query(
+    "SELECT id_prodi FROM prodi WHERE LOWER(nama_prodi = $1)",
+    [namaProdi]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
 async function addProdi(id_jurusan, nama_prodi) {
   await sibema.query(
     "INSERT INTO prodi (id_jurusan, nama_prodi) VALUES ($1, $2)",
@@ -51,4 +61,11 @@ async function deleteProdi(id_prodi) {
   await sibema.query("DELETE FROM prodi WHERE id_prodi = $1", [id_prodi]);
 }
 
-export { getProdi, addProdi, getProdiById, updateProdi, deleteProdi };
+export {
+  getProdi,
+  addProdi,
+  getProdiById,
+  getProdiId,
+  updateProdi,
+  deleteProdi,
+};

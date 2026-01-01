@@ -1,4 +1,4 @@
-import sibema from "../config/sibema";
+import sibema from "../config/sibema.js";
 
 async function getMahasiswa() {
   const query = await sibema.query(`
