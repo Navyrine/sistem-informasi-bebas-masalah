@@ -22,7 +22,7 @@ async function showMahasiswa() {
 async function showMahasiswaById(idMhs) {
   const result = await getMahasiswabyId(idMhs);
 
-  if (result.length === 0) {
+  if (!result) {
     throw new ConflictError("Data mahasiswa tidak ada");
   }
 
