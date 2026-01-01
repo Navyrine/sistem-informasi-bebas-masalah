@@ -7,7 +7,7 @@ import {
   addMahasiswa,
   updateMahasiswa,
   deleteMahasiswa,
-} from "../model/mahasiswaModel";
+} from "../model/mahasiswaModel.js";
 
 async function showMahasiswa() {
   const result = await getMahasiswa();

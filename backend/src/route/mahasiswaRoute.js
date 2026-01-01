@@ -5,7 +5,7 @@ import {
   newMahasiswa,
   changeMahasiswa,
   remove,
-} from "../controller/mahasiswaController";
+} from "../controller/mahasiswaController.js";
 
 const mahasiswaRouter = express.Router();
 

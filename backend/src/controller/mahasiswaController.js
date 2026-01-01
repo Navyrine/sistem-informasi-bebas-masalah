@@ -4,7 +4,7 @@ import {
   saveMahasiswa,
   editMahasiswa,
   removeMahasiswa,
-} from "../service/mahasiswaService";
+} from "../service/mahasiswaService.js";
 
 async function presentMahsiswa(req, res, next) {
   try {
