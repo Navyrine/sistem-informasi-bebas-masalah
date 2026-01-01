@@ -53,9 +53,9 @@ async function newProdi(req, res, next) {
 async function changeProdi(req, res, next) {
   try {
     const id_prodi = req.params.id_prodi;
-    const { nama_jurusan, nama_prodi } = req.body;
+    const updateBody = req.body;
 
-    await editProdi(nama_jurusan, id_prodi, nama_prodi);
+    await editProdi(id_prodi, updateBody);
     return res.status(200).json({
       status: 200,
       message: "Berhasil mengubah prodi",

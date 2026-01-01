@@ -20,26 +20,16 @@ async function showProdi() {
 }
 
 async function saveProdi(nama_jurusan, nama_prodi) {
-  const jurusanId = await getJurusanId(nama_jurusan);
-
   if (!nama_jurusan || !nama_prodi) {
     throw new BadRequestError("Nama jurusan atau nama prodi wajib diisi");
   }
 
-  if (typeof nama_jurusan === "string") {
-    nama_jurusan = nama_jurusan.toLowerCase().trim();
-  }
+  nama_prodi = nama_prodi.trim();
+  nama_jurusan = nama_jurusan.toLowerCase().trim();
 
-  if (typeof nama_prodi === "string") {
-    nama_prodi = nama_prodi.trim();
-  }
-
-  if (jurusanId === undefined) {
+  const jurusanId = await getJurusanId(nama_jurusan);
+  if (!jurusanId) {
     throw new ConflictError("Jurusan tidak ditemukan");
-  }
-
-  if (typeof jurusanId.id_jurusan === "string") {
-    jurusanId = parseInt(jurusanId);
   }
 
   await addProdi(jurusanId.id_jurusan, nama_prodi);
@@ -63,20 +53,39 @@ async function showProdibyId(id_prodi) {
   };
 }
 
-async function editProdi(nama_jurusan, id_prodi, nama_prodi) {
-  if (typeof nama_jurusan === "string") {
-    nama_jurusan = nama_jurusan.toLowerCase().trim();
+async function editProdi(id_prodi, updateBody) {
+  const existingProdi = await getProdiById(id_prodi);
+
+  if (!existingProdi) {
+    throw new ConflictError("Data prodi tidak ditemukan");
   }
 
-  if (typeof id_prodi === "string" || isNaN(id_prodi)) {
-    id_prodi = parseInt(id_prodi);
+  if (typeof updateBody.nama_jurusan === "string") {
+    updateBody.nama_jurusan = updateBody.nama_jurusan.toLowerCase().trim();
   }
 
-  if (typeof nama_prodi === "string") {
-    nama_prodi = nama_prodi.trim();
+  if (typeof updateBody.nama_prodi === "string") {
+    updateBody.nama_prodi = updateBody.nama_prodi.trim();
   }
 
-  await updateProdi(nama_jurusan, id_prodi, nama_prodi);
+  const jurusanId = existingProdi.id_jurusan;
+  console.log(jurusanId);
+
+  if (updateBody.nama_jurusan) {
+    const jurusan = await getJurusanId(updateBody.nama_jurusan);
+
+    if (!jurusan) {
+      throw new ConflictError("Jurusan tidak ditemukan");
+    }
+    jurusanId = jurusan.id_jurusan;
+  }
+
+  const updateData = {
+    id_jurusan: jurusanId,
+    nama_prodi: updateBody.nama_prodi ?? existingProdi.nama_prodi,
+  };
+
+  await updateProdi(id_prodi, updateData);
 }
 
 async function removeProdi(id_prodi) {

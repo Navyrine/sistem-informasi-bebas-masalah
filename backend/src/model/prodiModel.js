@@ -40,16 +40,10 @@ async function getProdiById(id_prodi) {
   return prodiResult;
 }
 
-async function updateProdi(nama_jurusan, id_prodi, nama_prodi) {
-  const jurusanQuery = await sibema.query(
-    "SELECT id_jurusan FROM jurusan WHERE LOWER (nama_jurusan) = $1",
-    [nama_jurusan]
-  );
-  const id_jurusan = jurusanQuery.rows[0].id_jurusan;
-
+async function updateProdi(id_prodi, bodyUpdate) {
   await sibema.query(
     "UPDATE prodi SET id_jurusan = $1, nama_prodi = $2 WHERE id_prodi = $3",
-    [id_jurusan, nama_prodi, id_prodi]
+    [bodyUpdate.id_jurusan, bodyUpdate.nama_prodi, id_prodi]
   );
 }
 
