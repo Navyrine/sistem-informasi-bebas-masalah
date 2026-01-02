@@ -6,6 +6,7 @@ import errorHandler from "./src/middleware/errorHandle.js";
 import jurusanRouter from "./src/route/jurusanRoute.js";
 import prodiRouter from "./src/route/prodiRoute.js";
 import mahasiswaRouter from "./src/route/mahasiswaRoute.js";
+import pegawaiRouter from "./src/route/pegawaiRoute.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use("/", jurusanRouter);
 app.use("/", prodiRouter);
 app.use("/", mahasiswaRouter);
+app.use("/", pegawaiRouter);
 
 app.use(errorHandler);
 app.listen(3000, () => {
