@@ -53,9 +53,9 @@ async function newPegawai(req, res, next) {
 async function changePegawai(req, res, next) {
   try {
     const pegawaiId = req.params.pegawai_id;
-    const { nama_pegawai, not_telp, alamat } = req.body;
+    const { nama_pegawai, no_telp, alamat } = req.body;
 
-    await editPegawai(pegawaiId, nama_pegawai, not_telp, alamat);
+    await editPegawai(pegawaiId, nama_pegawai, no_telp, alamat);
     return res.status(200).json({
       status: 200,
       message: "Berhasil mengubah data pegawai",
