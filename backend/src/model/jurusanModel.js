@@ -7,10 +7,10 @@ async function getJurusan() {
   return result;
 }
 
-async function getJurusanId(nama_jurusan) {
+async function getJurusanId(namaJurusan) {
   const query = await sibema.query(
     "SELECT id_jurusan FROM jurusan WHERE LOWER(nama_jurusan) = $1",
-    [nama_jurusan]
+    [namaJurusan]
   );
   const result = query.rows[0];
 
@@ -24,16 +24,16 @@ async function getAllNamaJurusan() {
   return result;
 }
 
-async function addJurusan(nama_jurusan) {
+async function addJurusan(namaJurusan) {
   await sibema.query("INSERT INTO jurusan (nama_jurusan) VALUES ($1)", [
-    nama_jurusan,
+    namaJurusan,
   ]);
 }
 
-async function updateJurusan(id_jurusan, nama_jurusan) {
+async function updateJurusan(jurusanId, namaJurusan) {
   await sibema.query(
     "UPDATE jurusan SET nama_jurusan = $1 WHERE id_jurusan = $2",
-    [nama_jurusan, id_jurusan]
+    [namaJurusan, jurusanId]
   );
 }
 

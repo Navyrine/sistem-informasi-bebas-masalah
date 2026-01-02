@@ -10,40 +10,31 @@ async function showJurusan() {
   const result = await getJurusan();
 
   if (result.length === 0) {
-    throw new ConflictError("Data kosong");
+    throw new ConflictError("Data jurusan tidak ditemukan");
   } else {
     return result;
   }
 }
 
-async function saveJurusan(nama_jurusan) {
-  if (!nama_jurusan) {
+async function saveJurusan(namaJurusan) {
+  if (!namaJurusan) {
     throw new BadRequetError("nama jurusan wajib diisi");
   }
 
-  if (typeof nama_jurusan === "string") {
-    nama_jurusan = nama_jurusan.trim();
-  }
+  namaJurusan = namaJurusan.trim();
 
-  await addJurusan(nama_jurusan);
+  await addJurusan(namaJurusan);
 }
 
-async function editJurusan(id_jurusan, nama_jurusan) {
-  if (!id_jurusan || !nama_jurusan) {
-    throw new BadRequetError("id jurusan dan nama jurusan wajib diisi");
+async function editJurusan(jurusanId, namaJurusan) {
+  if (!jurusanId || !namaJurusan) {
+    throw new BadRequetError("id jurusan atau nama jurusan wajib diisi");
   }
 
-  if (typeof id_jurusan === "string") {
-    id_jurusan = parseInt(id_jurusan);
-  } else {
-    return id_jurusan;
-  }
+  jurusanId = parseInt(jurusanId);
+  namaJurusan = namaJurusan.trim();
 
-  if (typeof nama_jurusan === "string") {
-    nama_jurusan = nama_jurusan.trim();
-  }
-
-  await updateJurusan(id_jurusan, nama_jurusan);
+  await updateJurusan(jurusanId, namaJurusan);
 }
 
 export { showJurusan, saveJurusan, editJurusan };
