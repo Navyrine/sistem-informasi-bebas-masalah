@@ -1,4 +1,4 @@
-import sibema from "../config/sibema";
+import sibema from "../config/sibema.js";
 
 async function getPegawai() {
   const query = await sibema.query("SELECT * FROM pegawai");

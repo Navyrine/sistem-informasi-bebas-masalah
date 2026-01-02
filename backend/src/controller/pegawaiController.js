@@ -4,7 +4,7 @@ import {
   savePegawai,
   editPegawai,
   removePegawai,
-} from "../service/pegawaiService";
+} from "../service/pegawaiService.js";
 
 async function presentPegawai(req, res, next) {
   try {

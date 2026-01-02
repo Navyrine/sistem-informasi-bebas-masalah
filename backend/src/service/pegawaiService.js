@@ -1,12 +1,12 @@
-import ConflictError from "../error/ConflictError";
-import BadRequestError from "../error/BadRequestError";
+import ConflictError from "../error/ConflictError.js";
+import BadRequestError from "../error/BadRequestError.js";
 import {
   getPegawai,
   getPegawaiById,
   addPegawai,
   updatePegawai,
   deletePegawai,
-} from "../model/pegawaiModel";
+} from "../model/pegawaiModel.js";
 
 async function showPegawai() {
   const result = await getPegawai();

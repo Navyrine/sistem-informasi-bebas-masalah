@@ -5,7 +5,7 @@ import {
   newPegawai,
   changePegawai,
   remove,
-} from "../controller/pegawaiController";
+} from "../controller/pegawaiController.js";
 
 const pegawaiRouter = express.Router();
 
