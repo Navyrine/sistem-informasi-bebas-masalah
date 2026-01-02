@@ -22,7 +22,7 @@ async function presentPegawai(req, res, next) {
 
 async function presentPegawaiById(req, res, next) {
   try {
-    const pegawaiId = req.params.pegawai_id;
+    const pegawaiId = req.params.id_pegawai;
     const result = await showPegawaiById(pegawaiId);
 
     return res.status(200).json({
