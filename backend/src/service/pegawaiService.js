@@ -3,7 +3,6 @@ import BadRequestError from "../error/BadRequestError";
 import {
   getPegawai,
   getPegawaiById,
-  getPegawaiId,
   addPegawai,
   updatePegawai,
   deletePegawai,
@@ -29,19 +28,7 @@ async function showPegawaiById(pegawaiId) {
   return result;
 }
 
-async function showPegawaiId(namaPegawai) {
-  if (!namaPegawai) {
-    throw new BadRequestError("Nama pegawai tidak boleh kosong");
-  }
-
-  namaPegawai = namaPegawai.toLowerCase().trim();
-
-  const result = await getPegawaiId(namaPegawai);
-
-  return result;
-}
-
-async function newPegawai(namaPegawai, noTelp, alamat) {
+async function savePegawai(namaPegawai, noTelp, alamat) {
   if (!namaPegawai || !noTelp || !alamat) {
     throw new BadRequestError(
       "Nama pegawai atau no telp atau alamat tidak boleh kosong"
@@ -89,8 +76,7 @@ async function removePegawai(pegawaiId) {
 export {
   showPegawai,
   showPegawaiById,
-  showPegawaiId,
-  newPegawai,
+  savePegawai,
   editPegawai,
   removePegawai,
 };
