@@ -52,7 +52,7 @@ async function newPegawai(req, res, next) {
 
 async function changePegawai(req, res, next) {
   try {
-    const pegawaiId = req.params.pegawai_id;
+    const pegawaiId = req.params.id_pegawai;
     const { nama_pegawai, no_telp, alamat } = req.body;
 
     await editPegawai(pegawaiId, nama_pegawai, no_telp, alamat);
