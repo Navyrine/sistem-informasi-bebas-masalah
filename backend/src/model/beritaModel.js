@@ -20,8 +20,8 @@ async function getBeritaById(beritaId) {
 async function addBerita(judul, konten, gambar) {
   await sibema.query(
     `
-        INSERT INTO sibema
-        (judul, kontent, gambar)
+        INSERT INTO berita
+        (judul, konten, gambar)
         VALUES
         ($1, $2, $3)    
     `,
