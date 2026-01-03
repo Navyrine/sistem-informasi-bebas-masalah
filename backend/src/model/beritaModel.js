@@ -33,6 +33,7 @@ async function updateBerita(beritaId, judul, konten, gambar) {
   await sibema.query(
     `
         UPDATE berita
+        SET
         judul = $1,
         konten = $2,
         gambar = $3
