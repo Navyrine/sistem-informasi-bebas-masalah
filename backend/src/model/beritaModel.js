@@ -45,3 +45,5 @@ async function updateBerita(beritaId, judul, konten, gambar) {
 async function deleteBerita(beritaId) {
   await sibema.query("DELETE FROM berita WHERE id_berita = $1", [beritaId]);
 }
+
+export { getBerita, getBeritaById, addBerita, updateBerita, deleteBerita };
