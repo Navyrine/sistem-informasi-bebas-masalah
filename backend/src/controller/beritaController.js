@@ -35,6 +35,9 @@ async function newBerita(req, res, next) {
     const gambarPath = req.file ? req.file.path : null;
 
     await saveBerita(judul, konten, gambarPath);
+    return res
+      .status(201)
+      .json({ status: 201, message: "Berhasil menambahkan berita" });
   } catch (err) {
     console.log(err);
     next(err);
@@ -48,6 +51,9 @@ async function changeBerita(req, res, next) {
     const gambarPath = req.file ? req.file.path : null;
 
     await editBerita(beritaId, judul, konten, gambarPath);
+    return res
+      .status(200)
+      .json({ status: 200, message: "Berhasil mengubah data berita" });
   } catch (err) {
     console.log(err);
     next(err);
@@ -59,6 +65,9 @@ async function remove(req, res, next) {
     const beritaId = req.params.id_berita;
 
     await removeBerita(beritaId);
+    return res
+      .status(201)
+      .json({ status: 201, message: "Berhasil menghapus data berita" });
   } catch (err) {
     console.log(err);
     next(err);
