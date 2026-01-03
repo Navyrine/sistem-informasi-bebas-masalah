@@ -4,7 +4,7 @@ import {
   saveBerita,
   editBerita,
   removeBerita,
-} from "../service/beritaService";
+} from "../service/beritaService.js";
 
 async function presentBerita(req, res, next) {
   try {
