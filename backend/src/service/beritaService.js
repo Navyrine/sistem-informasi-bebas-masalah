@@ -1,5 +1,3 @@
-import multer from "multer";
-import path from "path";
 import ConflictError from "../error/ConflictError.js";
 import BadRequestError from "../error/BadRequestError.js";
 import {
@@ -9,19 +7,6 @@ import {
   updateBerita,
   deleteBerita,
 } from "../model/beritaModel.js";
-
-const storage = multer.diskStorage({
-  destination: (req, res, cb) => {
-    cb(null, "../upload/gambar-berita");
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      Date.now() + path.extname(file.originalname) + "." + file.mimetype
-    );
-  },
-});
-const image = multer({ storage });
 
 async function showBerita() {
   const result = await getBerita();
@@ -81,7 +66,7 @@ async function editBerita(beritaId, judul, konten, gambar) {
   judul = judul.trim();
   konten = konten.trim();
 
-  if (gambar === null || gambar === "") {
+  if (!gambar) {
     gambar = existingBerita.gambar;
   }
 
