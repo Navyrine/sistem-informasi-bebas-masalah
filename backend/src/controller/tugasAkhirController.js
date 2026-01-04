@@ -4,7 +4,7 @@ import {
   showTugasAkhirById,
   saveTugasAkhir,
   editTugasAkhir,
-} from "../service/tugasAkhirService";
+} from "../service/tugasAkhirService.js";
 
 async function presentTugasAkhir(req, res, next) {
   try {
@@ -99,3 +99,9 @@ async function changeTugasAkhir(req, res, next) {
     next(err);
   }
 }
+export {
+  presentTugasAkhir,
+  presentTugasAkhirById,
+  newTugasAkhir,
+  changeTugasAkhir,
+};
