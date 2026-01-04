@@ -5,7 +5,7 @@ import {
   presentTugasAkhirById,
   newTugasAkhir,
   changeTugasAkhir,
-} from "../controller/tugasAkhirController";
+} from "../controller/tugasAkhirController.js";
 
 const tugasAkhirRoute = express.Router();
 

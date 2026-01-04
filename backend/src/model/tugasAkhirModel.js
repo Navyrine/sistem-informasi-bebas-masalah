@@ -8,7 +8,10 @@ async function getTugasAkhir() {
 }
 
 async function getTugasAkhirById(taId) {
-  const query = await sibema.query("SELECT * FROM WHERE id_ta = $1", [taId]);
+  const query = await sibema.query(
+    "SELECT * FROM tugas_akhir WHERE id_ta = $1",
+    [taId]
+  );
   const result = query.rows[0];
 
   return result;
@@ -19,8 +22,7 @@ async function addTugasAkhir(
   lembarPengesahan,
   lembarKonsul1,
   lembarKonsul2,
-  lembarRevisi,
-  rincian
+  lembarRevisi
 ) {
   await sibema.query(
     `
