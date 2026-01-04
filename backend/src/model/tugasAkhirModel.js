@@ -1,4 +1,4 @@
-import sibema from "../config/sibema";
+import sibema from "../config/sibema.js";
 
 async function getTugasAkhir() {
   const query = await sibema.query("SELECT * FROM tugas_akhir");
@@ -25,9 +25,9 @@ async function addTugasAkhir(
   await sibema.query(
     `
         INSERT INTO tugas_akhir
-        (lembar_persetujuan, lembar_pengesahan, lembar_konsul_1, lembar_konsul_2, lembar_revisi, rincian)
+        (lembar_persetujuan, lembar_pengesahan, lembar_konsul_1, lembar_konsul_2, lembar_revisi)
         VALUES
-        ($1, $2, $3, $4, $5, $6)
+        ($1, $2, $3, $4, $5)
     `,
     [
       lembarPersetujuan,
@@ -35,20 +35,11 @@ async function addTugasAkhir(
       lembarKonsul1,
       lembarKonsul2,
       lembarRevisi,
-      rincian,
     ]
   );
 }
 
-async function updateTugasAkhir(
-  taId,
-  lembarPersetujuan,
-  lembarPengesahan,
-  lembarKonsul1,
-  lembarKonsul2,
-  lembarRevisi,
-  rincian
-) {
+async function updateTugasAkhir(taId, updateBody) {
   await sibema.query(
     `
         UPDATE tugas_akhir
@@ -58,16 +49,15 @@ async function updateTugasAkhir(
         lembar_konsul_1 = $3,
         lembar_konsul_2 = $4,
         lembar_revisi = $5,
-        rincian = $6
-        WHERE id_ta = $7    
+        WHERE id_ta = $6 
     `,
     [
-      lembarPersetujuan,
-      lembarPengesahan,
-      lembarKonsul1,
-      lembarKonsul2,
-      lembarRevisi,
-      rincian,
+      updateBody.lembar_persetujuan,
+      updateBody.lembar_pengesahan,
+      updateBody.lembar_konsul_1,
+      updateBody.lembar_konsul_2,
+      updateBody.lembar_revisi,
+      updateBody.rincian,
       taId,
     ]
   );
