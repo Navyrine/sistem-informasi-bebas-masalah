@@ -8,6 +8,7 @@ import prodiRouter from "./src/route/prodiRoute.js";
 import mahasiswaRouter from "./src/route/mahasiswaRoute.js";
 import pegawaiRouter from "./src/route/pegawaiRoute.js";
 import beritaRoute from "./src/route/beritaRoute.js";
+import tugasAkhirRoute from "./src/route/tugasAkhirRoute.js";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/", prodiRouter);
 app.use("/", mahasiswaRouter);
 app.use("/", pegawaiRouter);
 app.use("/", beritaRoute);
+app.use("/", tugasAkhirRoute);
 
 app.use(errorHandler);
 app.listen(3000, () => {
