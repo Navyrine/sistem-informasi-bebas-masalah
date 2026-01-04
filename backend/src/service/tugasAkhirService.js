@@ -1,5 +1,4 @@
 import ConflictError from "../error/ConflictError.js";
-import BadRequestError from "../error/BadRequestError.js";
 import {
   getTugasAkhir,
   getTugasAkhirById,
@@ -36,29 +35,9 @@ async function saveTugasAkhir(
   lembarKonsul2,
   lembarRevisi
 ) {
-  if (!lembarPersetujuan) {
-    throw new BadRequestError("Lembar pengesahan tidak boleh kosong");
-  }
-
-  if (!lembarPengesahan) {
-    throw new BadRequestError("Lembar pengesahan tidak boleh kosong");
-  }
-
-  if (!lembarKonsul1) {
-    throw new BadRequestError("Lembar pengesahan tidak boleh kosong");
-  }
-
-  if (!lembarKonsul2) {
-    throw new BadRequestError("Lembar pengesahan tidak boleh kosong");
-  }
-
-  if (!lembarRevisi) {
-    throw new BadRequestError("Lembar pengesahan tidak boleh kosong");
-  }
-
   await addTugasAkhir(
-    lembarPengesahan,
     lembarPersetujuan,
+    lembarPengesahan,
     lembarKonsul1,
     lembarKonsul2,
     lembarRevisi

@@ -5,6 +5,7 @@ import {
   saveTugasAkhir,
   editTugasAkhir,
 } from "../service/tugasAkhirService.js";
+import BadRequestError from "../error/BadRequestError.js";
 
 async function presentTugasAkhir(req, res, next) {
   try {
@@ -31,16 +32,45 @@ async function presentTugasAkhirById(req, res, next) {
 
 async function newTugasAkhir(req, res, next) {
   try {
-    const fileTa = req.files;
-    const data = {
-      lembar_persetujuan: fileTa?.lembar_persetujuan[0].path,
-      lembar_pengesahan: fileTa.lembar_pengesahan[0].path,
-      lembar_konsul_1: fileTa.lembar_konsul_1[0].path,
-      lembar_konsul_2: fileTa.lembar_konsul_2[0].path,
-      lembar_revisi: fileTa.lembar_revisi[0].path,
-    };
+    const lembarPersetujuanField = req.files["lembar_persetujuan"];
+    const lembarPengesahanField = req.files["lembar_pengesahan"];
+    const lembarKonsul1Field = req.files["lembar_konsul_1"];
+    const lembarKonsul2Field = req.files["lembar_konsul_2"];
+    const lembarRevisiField = req.files["lembar_revisi"];
 
-    await saveTugasAkhir(data);
+    if (lembarPersetujuanField === undefined) {
+      throw new BadRequestError("Lembar persetujuan wajib diisi");
+    }
+
+    if (lembarPengesahanField === undefined) {
+      throw new BadRequestError("Lembar pengesahan wajib diisi");
+    }
+
+    if (lembarKonsul1Field === undefined) {
+      throw new BadRequestError("Lembar konsul 1 wajib diisi");
+    }
+
+    if (lembarKonsul2Field === undefined) {
+      throw new BadRequestError("Lembar konsul 2 wajib diisi");
+    }
+
+    if (lembarRevisiField === undefined) {
+      throw new BadRequestError("Lembar revisi wajib diisi");
+    }
+
+    const lembarPersetujuan = req.files["lembar_persetujuan"][0].path;
+    const lembarPengesahan = req.files["lembar_pengesahan"][0].path;
+    const lembarKonsul1 = req.files["lembar_konsul_1"][0].path;
+    const lembarKonsul2 = req.files["lembar_konsul_2"][0].path;
+    const lembarRevisi = req.files["lembar_revisi"][0].path;
+
+    await saveTugasAkhir(
+      lembarPersetujuan,
+      lembarPengesahan,
+      lembarKonsul1,
+      lembarKonsul2,
+      lembarRevisi
+    );
     return res
       .status(200)
       .json({ status: 201, message: "Berhasil menambahkan data tugas akhir" });
