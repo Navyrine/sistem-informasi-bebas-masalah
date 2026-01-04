@@ -24,6 +24,8 @@ async function showTugasAkhirById(taId) {
     throw new ConflictError("Data tugas akhir tidak ditemukan");
   }
 
+  taId = parseInt(taId);
+
   return result;
 }
 
@@ -54,7 +56,6 @@ async function saveTugasAkhir(
     throw new BadRequestError("Lembar pengesahan tidak boleh kosong");
   }
 
-  rincian = rincian.trim();
   await addTugasAkhir(
     lembarPengesahan,
     lembarPersetujuan,
@@ -71,6 +72,8 @@ async function editTugasAkhir(taId, updateBody) {
     throw new ConflictError("Data tugas akhir tidak ditemukan");
   }
 
+  taId = parseInt(taId);
+
   const updateData = {
     lembar_persetujuan:
       updateBody.lembar_persetujuan ?? existingtA.lembar_persetujuan,
@@ -80,7 +83,7 @@ async function editTugasAkhir(taId, updateBody) {
     lembar_konsul_2: updateBody.lembar_konsul_2 ?? existingtA.lembar_konsul_2,
     lembar_revisi: updateBody.lembar_revisi ?? existingtA.lembar_revisi,
   };
-  await updateTugasAkhir(taId, updateBody);
+  await updateTugasAkhir(taId, updateData);
 }
 
 export { showTugasAkhir, showTugasAkhirById, saveTugasAkhir, editTugasAkhir };

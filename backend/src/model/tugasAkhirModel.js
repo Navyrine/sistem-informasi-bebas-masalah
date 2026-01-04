@@ -48,7 +48,7 @@ async function updateTugasAkhir(taId, updateBody) {
         lembar_pengesahan = $2,
         lembar_konsul_1 = $3,
         lembar_konsul_2 = $4,
-        lembar_revisi = $5,
+        lembar_revisi = $5
         WHERE id_ta = $6 
     `,
     [
@@ -57,7 +57,6 @@ async function updateTugasAkhir(taId, updateBody) {
       updateBody.lembar_konsul_1,
       updateBody.lembar_konsul_2,
       updateBody.lembar_revisi,
-      updateBody.rincian,
       taId,
     ]
   );
