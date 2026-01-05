@@ -3,12 +3,17 @@ import path from "path";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "src/upload/gambar-berita");
+    cb(null, "src/upload/keuangan");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-const uploadImage = multer({ storage });
+const uploadFileKeuangan = multer({ storage }).fields([
+  {
+    name: "keuangan",
+    maxCount: 1,
+  },
+]);
 
-export default uploadImage;
+export default uploadFileKeuangan;
