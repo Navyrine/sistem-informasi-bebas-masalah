@@ -6,6 +6,7 @@ import {
   editTugasAkhir,
 } from "../service/tugasAkhirService.js";
 import BadRequestError from "../error/BadRequestError.js";
+import { getTugasAkhirById } from "../model/tugasAkhirModel.js";
 
 async function presentTugasAkhir(req, res, next) {
   try {
@@ -90,17 +91,40 @@ async function changeTugasAkhir(req, res, next) {
   try {
     const taId = req.params.id_ta;
     const fileTa = req.files;
-    const existingtA = await showTugasAkhirById(taId);
+
+    if (!fileTa["lembar_persetujuan"]) {
+      throw new BadRequestError("Lembar persetujuan wajib diisi");
+    }
+
+    if (!fileTa["lembar_pengesahan"]) {
+      throw new BadRequestError("Lembar pengesahan wajib diisi");
+    }
+
+    if (!fileTa["lembar_konsul_1"]) {
+      throw new BadRequestError("Lembar konsul 1 wajib diisi");
+    }
+
+    if (!fileTa["lembar_konsul_2"]) {
+      throw new BadRequestError("Lembar konsul 2 wajib diisi");
+    }
+
+    if (!fileTa["lembar_revisi"]) {
+      throw new BadRequestError("Lembar revisi wajib diisi");
+    }
+
+    const existingtA = await getTugasAkhirById(taId);
     const updateData = {
       lembar_persetujuan:
-        fileTa.lembar_persetujuan[0].path ?? existingtA.lembar_persetujuan,
+        fileTa["lembar_persetujuan"]?.[0]?.path ??
+        existingtA.lembar_persetujuan,
       lembar_pengesahan:
-        fileTa.lembar_pengesahan[0].path ?? existingtA.lembar_pengesahan,
+        fileTa["lembar_pengesahan"]?.[0]?.path ?? existingtA.lembar_pengesahan,
       lembar_konsul_1:
-        fileTa.lembar_konsul_1[0].path ?? existingtA.lembar_konsul_1,
+        fileTa["lembar_konsul_1"]?.[0]?.path ?? existingtA.lembar_konsul_1,
       lembar_konsul_2:
-        fileTa.lembar_konsul_2[0].path ?? existingtA.lembar_konsul_2,
-      lembar_revisi: fileTa.lembar_revisi[0].path ?? existingtA.lembar_revisi,
+        fileTa["lembar_konsul_2"]?.[0]?.path ?? existingtA.lembar_konsul_2,
+      lembar_revisi:
+        fileTa["lembar_revisi"]?.[0]?.path ?? existingtA.lembar_revisi,
     };
 
     await editTugasAkhir(taId, updateData);
@@ -129,6 +153,7 @@ async function changeTugasAkhir(req, res, next) {
     next(err);
   }
 }
+
 export {
   presentTugasAkhir,
   presentTugasAkhirById,
