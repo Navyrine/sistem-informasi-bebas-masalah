@@ -19,6 +19,8 @@ async function showPerpustakaan() {
 async function showPerpustakaanById(perpusId) {
   const result = await getPerpustakaanById(perpusId);
 
+  perpusId = parseInt(perpusId);
+
   if (!result) {
     throw new ConflictError("Data perpustakaan tidak ditemukan");
   }
@@ -30,7 +32,8 @@ async function savePerpustakaan(dokumen_perpus) {
   await addPerpustakaan(dokumen_perpus);
 }
 
-async function updatePerpustakaan(perpusId, dokumen_perpus) {
+async function editPerpustakaan(perpusId, dokumen_perpus) {
+  perpusId = parseInt(perpusId);
   await addPerpustakaan(dokumen_perpus, perpusId);
 }
 
@@ -38,5 +41,5 @@ export {
   showPerpustakaan,
   showPerpustakaanById,
   savePerpustakaan,
-  updatePerpustakaan,
+  editPerpustakaan,
 };
