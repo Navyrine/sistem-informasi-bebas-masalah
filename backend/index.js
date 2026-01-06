@@ -11,6 +11,7 @@ import beritaRoute from "./src/route/beritaRoute.js";
 import tugasAkhirRoute from "./src/route/tugasAkhirRoute.js";
 import keuanganRoute from "./src/route/keuanganRoute.js";
 import perpustakaanRoute from "./src/route/perpustakaanRoute.js";
+import akademikRoute from "./src/route/akademikRoute.js";
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/", beritaRoute);
 app.use("/", tugasAkhirRoute);
 app.use("/", keuanganRoute);
 app.use("/", perpustakaanRoute);
+app.use("/", akademikRoute);
 
 app.use(errorHandler);
 app.listen(3000, () => {
