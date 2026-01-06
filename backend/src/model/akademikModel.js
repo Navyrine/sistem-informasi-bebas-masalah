@@ -56,9 +56,9 @@ async function updateAkademik(updateData, akademikId) {
       updateData.khs_sem_2,
       updateData.khs_sem_3,
       updateData.khs_sem_4,
-      updateData_khs_sem_5,
-      updateData_khs_sem_6,
-      updateData_lembar_sp,
+      updateData.khs_sem_5,
+      updateData.khs_sem_6,
+      updateData.lembar_sp,
       akademikId,
     ]
   );

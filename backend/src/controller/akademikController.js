@@ -1,3 +1,4 @@
+import fs from "fs";
 import BadRequestError from "../error/BadRequestError.js";
 import { getAkademikById } from "../model/akademikModel.js";
 import {
@@ -85,6 +86,10 @@ async function newAkademik(req, res, next) {
       khsSem6Path,
       lembarSpPath
     );
+
+    return res
+      .status(201)
+      .json({ status: 201, message: "Berhasil menambahkan data akademik" });
   } catch (err) {
     Object.values(req.files || {})
       .flat()
@@ -134,29 +139,29 @@ async function changeAkademik(req, res, next) {
     const update = {
       khs_sem_1:
         fileAkademik["khs_sem_1"]?.[0]?.path ?? existingtAkademik.khs_sem_1,
-      khs_sem_1:
+      khs_sem_2:
         fileAkademik["khs_sem_2"]?.[0]?.path ?? existingtAkademik.khs_sem_2,
-      khs_sem_1:
+      khs_sem_3:
         fileAkademik["khs_sem_3"]?.[0]?.path ?? existingtAkademik.khs_sem_3,
-      khs_sem_1:
+      khs_sem_4:
         fileAkademik["khs_sem_4"]?.[0]?.path ?? existingtAkademik.khs_sem_4,
-      khs_sem_1:
+      khs_sem_5:
         fileAkademik["khs_sem_5"]?.[0]?.path ?? existingtAkademik.khs_sem_5,
-      khs_sem_1:
+      khs_sem_6:
         fileAkademik["khs_sem_6"]?.[0]?.path ?? existingtAkademik.khs_sem_6,
-      khs_sem_1:
+      lembar_sp:
         fileAkademik["lembar_sp"]?.[0]?.path ?? existingtAkademik.lembar_sp,
     };
 
-    await editAka(update, akademikId);
+    await editAkademik(update, akademikId);
 
-    Object.keys(updateData).forEach((key) => {
+    Object.keys(update).forEach((key) => {
       if (
         fileAkademik[key] &&
         existingtAkademik[key] &&
         existingtAkademik[key] !== update[key]
       ) {
-        fs.unlink(existingtA[key], () => {});
+        fs.unlink(existingtAkademik[key], () => {});
       }
     });
 
