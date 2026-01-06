@@ -1,3 +1,4 @@
+import fs from "fs";
 import BadRequestError from "../error/BadRequestError.js";
 import {
   showKeuangan,
@@ -31,7 +32,7 @@ async function presentKeuanganById(req, res, next) {
 
 async function newKeuangan(req, res, next) {
   try {
-    const keuanganPath = req.file?.keuangan?.path;
+    const keuanganPath = req.file ? req.file.path : null;
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
@@ -42,6 +43,14 @@ async function newKeuangan(req, res, next) {
       .status(201)
       .json({ status: 201, message: "Berhasil menambahkan data keuangan" });
   } catch (err) {
+    if (req.file) {
+      fs.unlink(req.file.path, (unlinkErr) => {
+        if (unlinkErr) {
+          console.log("Gagal menghapus file: ", unlinkErr);
+        }
+      });
+    }
+
     console.log(err);
     next(err);
   }

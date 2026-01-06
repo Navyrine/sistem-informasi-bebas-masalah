@@ -9,11 +9,6 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-const uploadFileKeuangan = multer({ storage }).fields([
-  {
-    name: "keuangan",
-    maxCount: 1,
-  },
-]);
+const uploadFileKeuangan = multer({ storage });
 
 export default uploadFileKeuangan;
