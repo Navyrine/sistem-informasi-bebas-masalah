@@ -6,6 +6,7 @@ import {
   saveKeuangan,
   editKeuangan,
 } from "../service/keuanganService.js";
+import { getKeuanganById } from "../model/keuanganModel.js";
 
 async function presentKeuangan(req, res, next) {
   try {
@@ -59,17 +60,30 @@ async function newKeuangan(req, res, next) {
 async function changeKeuangan(req, res, next) {
   try {
     const keuanganId = req.params.id_keuangan;
-    const keuanganPath = req.file?.keuangan?.path;
+    const keuanganPath = req.file ? req.file.path : null;
+    const existingKeuangan = getKeuanganById(keuanganId);
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
 
     await editKeuangan(keuanganPath, keuanganId);
+
+    if (req.file && existingKeuangan.dokumen_keuangan) {
+      fs.unlink(existingKeuangan.dokumen_keuangan, (error) => {
+        if (error) {
+          console.log("Gagal menghapus file keuangan lama: ", error);
+        }
+      });
+    }
     return res
       .status(201)
       .json({ status: 200, message: "Berhasil mengubah data keuangan" });
   } catch (err) {
+    if (req.file) {
+      fs.unlink(req.file.path, () => {});
+    }
+
     console.log(err);
     next(err);
   }
