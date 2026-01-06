@@ -1,11 +1,11 @@
 import BadRequestError from "../error/BadRequestError.js";
-import { getAkademikById } from "../model/akademikModel";
+import { getAkademikById } from "../model/akademikModel.js";
 import {
   showAkademik,
   showAkademikById,
   saveAkademik,
-  editTugasAkhir,
-} from "../service/akademikService";
+  editAkademik,
+} from "../service/akademikService.js";
 
 async function presentAkademik(req, res, next) {
   try {
@@ -97,7 +97,7 @@ async function newAkademik(req, res, next) {
   }
 }
 
-async function changeTugasAkhir(req, res, next) {
+async function changeAkademik(req, res, next) {
   try {
     const akademikId = req.params.id_akademik;
     const fileAkademik = req.files;
@@ -148,7 +148,7 @@ async function changeTugasAkhir(req, res, next) {
         fileAkademik["lembar_sp"]?.[0]?.path ?? existingtAkademik.lembar_sp,
     };
 
-    await editTugasAkhir(update, akademikId);
+    await editAka(update, akademikId);
 
     Object.keys(updateData).forEach((key) => {
       if (
@@ -175,4 +175,4 @@ async function changeTugasAkhir(req, res, next) {
   }
 }
 
-export { presentAkademik, presentAkademikById, newAkademik, changeTugasAkhir };
+export { presentAkademik, presentAkademikById, newAkademik, changeAkademik };

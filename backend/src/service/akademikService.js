@@ -48,7 +48,7 @@ async function saveAkademik(
   );
 }
 
-async function editTugasAkhir(updateData, akademikId) {
+async function editAkademik(updateData, akademikId) {
   akademikId = parseInt(akademikId);
 
   const existingAkademik = getAkademikById(akademikId);
@@ -68,4 +68,4 @@ async function editTugasAkhir(updateData, akademikId) {
   await updateAkademik(update, akademikId);
 }
 
-export { showAkademik, showAkademikById, saveAkademik, editTugasAkhir };
+export { showAkademik, showAkademikById, saveAkademik, editAkademik };
