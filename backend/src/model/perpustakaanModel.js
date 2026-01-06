@@ -23,7 +23,7 @@ async function addPerpustakaan(dokumen_perpus) {
   ]);
 }
 
-async function updatePerpustakaan(perpusId, dokumen_perpus) {
+async function updatePerpustakaan(dokumen_perpus, perpusId) {
   await sibema.query(
     `
         UPDATE perpustakaan

@@ -17,7 +17,7 @@ perpustakaanRoute.post(
   newPerpustakaan
 );
 perpustakaanRoute.put(
-  "/perpustakaan/id_perpus",
+  "/perpustakaan/:id_perpus",
   handleFilePerpustakaan.single("dokumen_perpus"),
   changePerpustakaan
 );
