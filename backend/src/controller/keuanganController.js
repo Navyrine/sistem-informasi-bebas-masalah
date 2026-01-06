@@ -13,7 +13,7 @@ async function presentKeuangan(req, res, next) {
     return res.status(200).json({ status: 200, data: result });
   } catch (err) {
     console.log(err);
-    next(er);
+    next(err);
   }
 }
 
@@ -25,7 +25,7 @@ async function presentKeuanganById(req, res, next) {
     return res.status(200).json({ status: 200, data: result });
   } catch (err) {
     console.log(err);
-    next(er);
+    next(err);
   }
 }
 
@@ -43,7 +43,7 @@ async function newKeuangan(req, res, next) {
       .json({ status: 201, message: "Berhasil menambahkan data keuangan" });
   } catch (err) {
     console.log(err);
-    next(er);
+    next(err);
   }
 }
 
@@ -62,7 +62,7 @@ async function changeKeuangan(req, res, next) {
       .json({ status: 200, message: "Berhasil mengubah data keuangan" });
   } catch (err) {
     console.log(err);
-    next(er);
+    next(err);
   }
 }
 
