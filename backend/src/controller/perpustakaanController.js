@@ -5,7 +5,7 @@ import {
   showPerpustakaanById,
   savePerpustakaan,
   editPerpustakaan,
-} from "../service/perpustakaanService";
+} from "../service/perpustakaanService.js";
 
 async function presentPerpustakaan(req, res, next) {
   try {

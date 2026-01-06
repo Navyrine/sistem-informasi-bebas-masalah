@@ -34,7 +34,7 @@ async function savePerpustakaan(dokumen_perpus) {
 
 async function editPerpustakaan(perpusId, dokumen_perpus) {
   perpusId = parseInt(perpusId);
-  await addPerpustakaan(dokumen_perpus, perpusId);
+  await updatePerpustakaan(dokumen_perpus, perpusId);
 }
 
 export {
