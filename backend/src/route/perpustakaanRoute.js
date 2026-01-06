@@ -13,12 +13,12 @@ perpustakaanRoute.get("/perpustakaan", presentPerpustakaan);
 perpustakaanRoute.get("/perpustakaan/:id_perpus", presentPerpustakaanById);
 perpustakaanRoute.post(
   "/perpustakaan",
-  handleFilePerpustakaan,
+  handleFilePerpustakaan.single("dokumen_perpus"),
   newPerpustakaan
 );
 perpustakaanRoute.put(
   "/perpustakaan/id_perpus",
-  handleFilePerpustakaan,
+  handleFilePerpustakaan.single("dokumen_perpus"),
   changePerpustakaan
 );
 
