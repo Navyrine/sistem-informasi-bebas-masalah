@@ -12,7 +12,7 @@ async function getPerpustakaanById(perpusId) {
     "SELECT * FROM perpustakaan WHERE id_perpus = $1",
     [perpusId]
   );
-  const result = query.rows;
+  const result = query.rows[0];
 
   return result;
 }
