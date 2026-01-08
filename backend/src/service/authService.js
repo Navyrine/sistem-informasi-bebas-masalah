@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import sibema from "../config/sibema.js";
 import ConflictError from "../error/ConflictError.js";
 import { findMahasiswaId, updateIdAccount } from "../model/mahasiswaModel.js";
+import { getPegawaiId, updateAccountId } from "../model/pegawaiModel.js";
 import {
   findByUsername,
   addAccount,
@@ -19,7 +20,7 @@ import {
   verifyRefreshToken,
 } from "../util/handleToken.js";
 
-async function register(nama_mhs, username, email, password, role) {
+async function register(nama, username, email, password, role) {
   const existingUser = await findByUsername(username);
   if (existingUser) {
     throw new ConflictError("Username telah diterdaftar");
@@ -29,21 +30,37 @@ async function register(nama_mhs, username, email, password, role) {
     const hash = await bcrypt.hash(password, 12);
 
     if (role === "mahasiswa") {
-      user = await findMahasiswaId(nama_mhs);
+      user = await findMahasiswaId(nama);
       if (!user) {
         throw new ConflictError("Akun mahasiswa tidak ditemukan");
       }
 
-      if (user.id_account !== null) {
+      if (user.id_account !== null && user.id_account !== undefined) {
         throw new ConflictError("Mahasiswa sudah memiliki account");
       }
 
       await sibema.query("BEGIN");
 
-      const newAccount = await addAccount(username, email, hash, role);
-      await updateIdAccount(newAccount.id_account, user.id_mhs);
+      const newAccountMhs = await addAccount(username, email, hash, role);
+      await updateIdAccount(newAccountMhs.id_account, user.id_mhs);
 
-      sibema.query("COMMIT");
+      await sibema.query("COMMIT");
+    } else {
+      user = await getPegawaiId(nama);
+      if (!user) {
+        throw new ConflictError("Akun pegawai tidak ditemukan");
+      }
+
+      if (user.id_account !== null && user.id_account !== undefined) {
+        throw new ConflictError("Pegawai sudah memiliki akun");
+      }
+
+      await sibema.query("BEGIN");
+
+      const newAccountPegawai = await addAccount(username, email, hash, role);
+      await updateAccountId(newAccountPegawai.id_account, user.id_pegawai);
+
+      await sibema.query("COMMIT");
     }
   } catch (err) {
     console.log(err);

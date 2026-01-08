@@ -3,10 +3,10 @@ import { register, login, refresh, logout } from "../service/authService.js";
 
 async function registerAccount(req, res, next) {
   try {
-    let { nama_mhs, username, email, password, role } = req.body;
+    let { nama, username, email, password, role } = req.body;
 
-    if (!nama_mhs) {
-      throw new BadRequestError("Nama mahasiswa tidak boleh kosong");
+    if (!nama) {
+      throw new BadRequestError("Nama tidak boleh kosong");
     }
 
     if (!username) {
@@ -25,13 +25,13 @@ async function registerAccount(req, res, next) {
       throw new BadRequestError("Role tidak boleh kosong");
     }
 
-    nama_mhs = nama_mhs.toLowerCase().trim();
+    nama = nama.toLowerCase().trim();
     username = username.trim();
     email = email.trim();
     password = password.trim();
     role = role.toLowerCase().trim();
 
-    await register(nama_mhs, username, email, password, role);
+    await register(nama, username, email, password, role);
     return res
       .status(201)
       .json({ status: 201, message: "Berhasil membuat akun" });

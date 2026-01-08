@@ -39,6 +39,13 @@ async function addPegawai(namaPegawai, noTelp, alamat) {
   );
 }
 
+async function updateAccountId(accountId, pegawaiId) {
+  await sibema.query(
+    "UPDATE pegawai SET id_account = $1 WHERE id_pegawai = $2",
+    [accountId, pegawaiId]
+  );
+}
+
 async function updatePegawai(pegawaiId, namaPegawai, noTelp, alamat) {
   await sibema.query(
     `
@@ -61,6 +68,7 @@ export {
   getPegawaiById,
   getPegawaiId,
   addPegawai,
+  updateAccountId,
   updatePegawai,
   deletePegawai,
 };
