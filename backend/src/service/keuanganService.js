@@ -26,8 +26,8 @@ async function showKeuanganById(keuanganId) {
   return result;
 }
 
-async function saveKeuangan(dokumenKeuangan) {
-  await addKeuangan(dokumenKeuangan);
+async function saveKeuangan(mhsId, dokumenKeuangan) {
+  await addKeuangan(mhsId, dokumenKeuangan);
 }
 
 async function editKeuangan(keuanganId, dokumenKeuangan) {

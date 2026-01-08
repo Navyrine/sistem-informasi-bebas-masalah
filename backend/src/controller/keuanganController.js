@@ -1,5 +1,6 @@
 import fs from "fs";
 import BadRequestError from "../error/BadRequestError.js";
+import { findMahasiswaIdByAccountId } from "../model/mahasiswaModel.js";
 import {
   showKeuangan,
   showKeuanganById,
@@ -34,12 +35,15 @@ async function presentKeuanganById(req, res, next) {
 async function newKeuangan(req, res, next) {
   try {
     const keuanganPath = req.file ? req.file.path : null;
+    const accountId = req.user.id;
+    const mhsId = await findMahasiswaIdByAccountId(accountId);
+    console.log(mhsId);
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
 
-    await saveKeuangan(keuanganPath);
+    await saveKeuangan(mhsId.id_mhs, keuanganPath);
     return res
       .status(201)
       .json({ status: 201, message: "Berhasil menambahkan data keuangan" });

@@ -17,10 +17,11 @@ async function getKeuanganById(keuanganId) {
   return result;
 }
 
-async function addKeuangan(dokumenKeuangan) {
-  await sibema.query("INSERT INTO keuangan (dokumen_keuangan) VALUES ($1)", [
-    dokumenKeuangan,
-  ]);
+async function addKeuangan(mhsId, dokumenKeuangan) {
+  await sibema.query(
+    "INSERT INTO keuangan (id_mhs, dokumen_keuangan) VALUES ($1, $2)",
+    [mhsId, dokumenKeuangan]
+  );
 }
 
 async function updateKeuangan(keuanganId, dokumenKeuangan) {
