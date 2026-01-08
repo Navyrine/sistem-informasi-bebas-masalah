@@ -46,7 +46,7 @@ async function getMahasiswabyId(idMhs) {
 
 async function findMahasiswaId(namaMhs) {
   const query = await sibema.query(
-    "SELECT id_mhs FROM mahasiswa WHERE LOWER(TRIM(nama_mhs)) = $1",
+    "SELECT id_mhs, id_account FROM mahasiswa WHERE LOWER(nama_mhs) = $1",
     [namaMhs]
   );
   const result = query.rows[0];
@@ -90,8 +90,11 @@ async function updateMahasiswa(idMhs, updateBody) {
   );
 }
 
-async function updateIdAccount(accountId) {
-  await sibema.query("UPDATE mahasiswa SET id_account = $1", [accountId]);
+async function updateIdAccount(accountId, mhsId) {
+  await sibema.query("UPDATE mahasiswa SET id_account = $1 WHERE id_mhs = $2", [
+    accountId,
+    mhsId,
+  ]);
 }
 
 async function deleteMahasiswa(idMhs) {

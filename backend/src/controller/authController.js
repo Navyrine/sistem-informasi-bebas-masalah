@@ -1,11 +1,9 @@
 import BadRequestError from "../error/BadRequestError.js";
 import { register, login, refresh, logout } from "../service/authService.js";
-import { findMahasiswaId, updateIdAccount } from "../model/mahasiswaModel.js";
-import ConflictError from "../error/ConflictError.js";
 
 async function registerAccount(req, res, next) {
   try {
-    const { nama_mhs, username, email, password, role } = req.body;
+    let { nama_mhs, username, email, password, role } = req.body;
 
     if (!nama_mhs) {
       throw new BadRequestError("Nama mahasiswa tidak boleh kosong");
@@ -32,20 +30,8 @@ async function registerAccount(req, res, next) {
     email = email.trim();
     password = password.trim();
     role = role.toLowerCase().trim();
-    let user;
-    console.log(user);
-    if (role === "mahasiswa") {
-      user = await findMahasiswaId(nama_mhs);
-      if (!user) {
-        throw new ConflictError("Akun mahasiswa tidak ditemukan");
-      }
 
-      if (user.id_mhs) {
-        throw new ConflictError("Mahasiswa telah memiliki akun");
-      }
-    }
-
-    await register(username, email, password, role);
+    await register(nama_mhs, username, email, password, role);
     return res
       .status(201)
       .json({ status: 201, message: "Berhasil membuat akun" });

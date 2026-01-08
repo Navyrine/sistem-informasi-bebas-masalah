@@ -2,7 +2,7 @@ import sibema from "../config/sibema.js";
 
 async function findByUsername(username) {
   const query = sibema.query(
-    "SELECT account.account_id, username FROM account WHERE TRIM(username) = $1",
+    "SELECT account.id_account, username FROM account WHERE TRIM(username) = $1",
     [username]
   );
   const result = (await query).rows[0];
@@ -11,15 +11,18 @@ async function findByUsername(username) {
 }
 
 async function addAccount(username, email, password, role) {
-  await sibema.query(
+  const query = await sibema.query(
     `
         INSERT INTO account
         (username, email, password, role)
         VALUES
-        ($1, $2, $3, $4)    
+        ($1, $2, $3, $4)
+        RETURNING id_account
     `,
     [username, email, password, role]
   );
+
+  return query.rows[0];
 }
 
 async function deleteAccount(accountId) {
