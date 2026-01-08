@@ -44,6 +44,16 @@ async function getMahasiswabyId(idMhs) {
   return result;
 }
 
+async function findMahasiswaId(namaMhs) {
+  const query = await sibema.query(
+    "SELECT id_mhs FROM mahasiswa WHERE LOWER(TRIM(nama_mhs)) = $1",
+    [namaMhs]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
 async function addMahasiswa(idProdi, nim, namaMhs, noTelp, alamat, tahunLulus) {
   await sibema.query(
     `
@@ -80,6 +90,10 @@ async function updateMahasiswa(idMhs, updateBody) {
   );
 }
 
+async function updateIdAccount(accountId) {
+  await sibema.query("UPDATE mahasiswa SET id_account = $1", [accountId]);
+}
+
 async function deleteMahasiswa(idMhs) {
   await sibema.query("DELETE FROM mahasiswa WHERE id_mhs = $1", [idMhs]);
 }
@@ -87,7 +101,9 @@ async function deleteMahasiswa(idMhs) {
 export {
   getMahasiswa,
   getMahasiswabyId,
+  findMahasiswaId,
   addMahasiswa,
   updateMahasiswa,
+  updateIdAccount,
   deleteMahasiswa,
 };

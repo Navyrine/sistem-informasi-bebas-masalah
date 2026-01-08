@@ -1,1 +1,111 @@
 import BadRequestError from "../error/BadRequestError.js";
+import { register, login, refresh, logout } from "../service/authService.js";
+import { findMahasiswaId, updateIdAccount } from "../model/mahasiswaModel.js";
+import ConflictError from "../error/ConflictError.js";
+
+async function registerAccount(req, res, next) {
+  try {
+    const { nama_mhs, username, email, password, role } = req.body;
+
+    if (!nama_mhs) {
+      throw new BadRequestError("Nama mahasiswa tidak boleh kosong");
+    }
+
+    if (!username) {
+      throw new BadRequestError("Username tidak boleh kosong");
+    }
+
+    if (!email) {
+      throw new BadRequestError("Email tidak boleh kosong");
+    }
+
+    if (!password) {
+      throw new BadRequestError("Password tidak boleh kosong");
+    }
+
+    if (!role) {
+      throw new BadRequestError("Role tidak boleh kosong");
+    }
+
+    nama_mhs = nama_mhs.toLowerCase().trim();
+    username = username.trim();
+    email = email.trim();
+    password = password.trim();
+    role = role.toLowerCase().trim();
+    let user;
+    console.log(user);
+    if (role === "mahasiswa") {
+      user = await findMahasiswaId(nama_mhs);
+      if (!user) {
+        throw new ConflictError("Akun mahasiswa tidak ditemukan");
+      }
+
+      if (user.id_mhs) {
+        throw new ConflictError("Mahasiswa telah memiliki akun");
+      }
+    }
+
+    await register(username, email, password, role);
+    return res
+      .status(201)
+      .json({ status: 201, message: "Berhasil membuat akun" });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function loginAccount(req, res, next) {
+  try {
+    const { username, password } = req.body;
+    if (!username) {
+      throw new BadRequestError("Username tidak boleh kosong");
+    }
+    if (!password) {
+      throw new BadRequestError("Password tidak boleh kosong");
+    }
+
+    const { accessToken, refreshToken } = await login(username, password);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: parseInt(process.env.MAX_AGE_COOKIE),
+    });
+
+    return res.status(200).json({ status: 200, access_token: accessToken });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function refreshToken(req, res, next) {
+  try {
+    const refreshToken = req.cookie.refreshToken;
+    const accessToken = await refresh(refreshToken);
+
+    return res.status(200).json({ status: 200, new_access_token: accessToken });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function logoutAccount(req, res, next) {
+  try {
+    const refreshToken = req.cookie.refreshToken;
+
+    await logout(refreshToken);
+    if (req.cookie.refreshToken) {
+      res.clearCookie("refreshToken");
+    }
+
+    return res.status(201).json({ status: 201, message: "Berhasil logout" });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+export { registerAccount, loginAccount, refreshToken, logoutAccount };
