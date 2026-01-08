@@ -13,11 +13,11 @@ function generateRefreshToken(payload) {
 }
 
 function verifyAccessToken(token) {
-  return jwt.verify(token, JWT_ACCESS_SECRET);
+  return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
 }
 
 function verifyRefreshToken(token) {
-  return jwt.verify(token, JWT_REFRESH_SECRET);
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 }
 
 export {
