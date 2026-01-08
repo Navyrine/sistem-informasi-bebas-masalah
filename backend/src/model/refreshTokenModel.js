@@ -9,10 +9,11 @@ async function findToken(token) {
   return result;
 }
 
-async function addRefreshToken(token) {
-  await sibema.query("INSERT INTO refresh_token (token) VALUES ($1, $2)", [
-    token,
-  ]);
+async function addRefreshToken(accountId, token) {
+  await sibema.query(
+    "INSERT INTO refresh_token (id_account, token) VALUES ($1, $2)",
+    [accountId, token]
+  );
 }
 
 async function deleteRefreshToken(token) {

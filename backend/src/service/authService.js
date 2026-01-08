@@ -84,7 +84,7 @@ async function login(username, password) {
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
 
-  await addRefreshToken(refreshToken);
+  await addRefreshToken(existingUser.id_account, refreshToken);
   return { accessToken, refreshToken };
 }
 
