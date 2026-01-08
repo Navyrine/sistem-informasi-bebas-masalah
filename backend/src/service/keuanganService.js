@@ -17,8 +17,9 @@ async function showKeuangan() {
 }
 
 async function showKeuanganById(keuanganId) {
-  const result = await getKeuanganById(keuanganId);
+  keuanganId = parseInt(keuanganId);
 
+  const result = await getKeuanganById(keuanganId);
   if (!result) {
     throw new ConflictError("Data keuangan tidak ditemukan");
   }
@@ -27,11 +28,15 @@ async function showKeuanganById(keuanganId) {
 }
 
 async function saveKeuangan(mhsId, dokumenKeuangan) {
+  mhsId = parseInt(mhsId);
   await addKeuangan(mhsId, dokumenKeuangan);
 }
 
-async function editKeuangan(keuanganId, dokumenKeuangan) {
-  await updateKeuangan(dokumenKeuangan, keuanganId);
+async function editKeuangan(mhsId, dokumenKeuangan, keuanganId) {
+  mhsId = parseInt(mhsId);
+  keuanganId = parseInt(keuanganId);
+
+  await updateKeuangan(mhsId, dokumenKeuangan, keuanganId);
 }
 
 export { showKeuangan, showKeuanganById, saveKeuangan, editKeuangan };

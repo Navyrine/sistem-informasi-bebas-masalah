@@ -24,14 +24,16 @@ async function addKeuangan(mhsId, dokumenKeuangan) {
   );
 }
 
-async function updateKeuangan(keuanganId, dokumenKeuangan) {
+async function updateKeuangan(mhsId, dokumenKeuangan, keuanganId) {
   await sibema.query(
     `
         UPDATE keuangan
-        SET dokumen_keuangan = $1
-        WHERE id_keuangan = $2    
+        SET
+        id_mhs = $1,
+        dokumen_keuangan = $2
+        WHERE id_keuangan = $3 
     `,
-    [dokumenKeuangan, keuanganId]
+    [mhsId, dokumenKeuangan, keuanganId]
   );
 }
 

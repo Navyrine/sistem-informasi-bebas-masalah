@@ -2,7 +2,8 @@ import sibema from "../config/sibema.js";
 
 async function findToken(token) {
   const query = await sibema.query(
-    "SELECT token FROM refresh_token WHERE token = token"
+    "SELECT token FROM refresh_token WHERE token = $1",
+    [token]
   );
   const result = query.rows[0];
 

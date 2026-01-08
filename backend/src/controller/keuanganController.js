@@ -66,12 +66,14 @@ async function changeKeuangan(req, res, next) {
     const keuanganId = req.params.id_keuangan;
     const keuanganPath = req.file ? req.file.path : null;
     const existingKeuangan = getKeuanganById(keuanganId);
+    let accountId = req.user.id;
+    let mhsId = await findMahasiswaIdByAccountId(accountId);
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
 
-    await editKeuangan(keuanganPath, keuanganId);
+    await editKeuangan(mhsId.id_mhs, keuanganPath, keuanganId);
 
     if (req.file && existingKeuangan.dokumen_keuangan) {
       fs.unlink(existingKeuangan.dokumen_keuangan, (error) => {

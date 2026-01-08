@@ -71,7 +71,7 @@ async function refreshToken(req, res, next) {
     const refreshToken = req.cookies.refreshToken;
     const accessToken = await refresh(refreshToken);
 
-    return res.status(200).json({ status: 200, new_access_token: accessToken });
+    return res.status(200).json({ status: 200, accessToken });
   } catch (err) {
     console.log(err);
     next(err);

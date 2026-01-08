@@ -90,6 +90,7 @@ async function refresh(refreshToken) {
   }
 
   const decoded = verifyRefreshToken(refreshToken);
+  console.log(decoded);
   const newAccessToken = generateAccessToken({
     id: decoded.id,
     role: decoded.role,
