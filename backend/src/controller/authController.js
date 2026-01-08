@@ -52,7 +52,7 @@ async function loginAccount(req, res, next) {
     }
 
     const { accessToken, refreshToken } = await login(username, password);
-    res.cookie("refreshToken", refreshToken, {
+    res.cookies("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
@@ -68,7 +68,7 @@ async function loginAccount(req, res, next) {
 
 async function refreshToken(req, res, next) {
   try {
-    const refreshToken = req.cookie.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
     const accessToken = await refresh(refreshToken);
 
     return res.status(200).json({ status: 200, new_access_token: accessToken });
@@ -80,10 +80,10 @@ async function refreshToken(req, res, next) {
 
 async function logoutAccount(req, res, next) {
   try {
-    const refreshToken = req.cookie.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
 
     await logout(refreshToken);
-    if (req.cookie.refreshToken) {
+    if (req.cookies.refreshToken) {
       res.clearCookie("refreshToken");
     }
 

@@ -3,11 +3,7 @@ import sibema from "../config/sibema.js";
 import ConflictError from "../error/ConflictError.js";
 import { findMahasiswaId, updateIdAccount } from "../model/mahasiswaModel.js";
 import { getPegawaiId, updateAccountId } from "../model/pegawaiModel.js";
-import {
-  findByUsername,
-  addAccount,
-  deleteAccount,
-} from "../model/authModel.js";
+import { findByUsername, addAccount } from "../model/authModel.js";
 import {
   findToken,
   addRefreshToken,
@@ -16,7 +12,6 @@ import {
 import {
   generateAccessToken,
   generateRefreshToken,
-  verifyAccessToken,
   verifyRefreshToken,
 } from "../util/handleToken.js";
 
