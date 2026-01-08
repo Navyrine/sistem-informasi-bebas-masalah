@@ -52,7 +52,7 @@ async function loginAccount(req, res, next) {
     }
 
     const { accessToken, refreshToken } = await login(username, password);
-    res.cookies("refreshToken", refreshToken, {
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
