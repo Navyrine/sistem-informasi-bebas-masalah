@@ -2,7 +2,7 @@ import sibema from "../config/sibema.js";
 
 async function findByUsername(username) {
   const query = sibema.query(
-    "SELECT account.id_account, username, password FROM account WHERE TRIM(username) = $1",
+    "SELECT account.id_account, username, password, role FROM account WHERE TRIM(username) = $1",
     [username]
   );
   const result = (await query).rows[0];
