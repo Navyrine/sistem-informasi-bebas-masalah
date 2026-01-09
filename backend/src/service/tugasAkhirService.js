@@ -1,14 +1,16 @@
 import ConflictError from "../error/ConflictError.js";
+import { findMahasiswaIdByAccountId } from "../model/mahasiswaModel.js";
+import { findPegawaiIdByAccountId } from "../model/pegawaiModel.js";
 import {
   getTugasAkhir,
   getTugasAkhirById,
   addTugasAkhir,
   updateTugasAkhir,
+  updateStatusTugasAkhir,
 } from "../model/tugasAkhirModel.js";
 
 async function showTugasAkhir() {
   const result = await getTugasAkhir();
-
   if (result.length === 0) {
     throw new ConflictError("Data tugas akhir tidak ditemukan");
   }
@@ -18,24 +20,24 @@ async function showTugasAkhir() {
 
 async function showTugasAkhirById(taId) {
   const result = await getTugasAkhirById(taId);
-
   if (!result) {
     throw new ConflictError("Data tugas akhir tidak ditemukan");
   }
-
-  taId = parseInt(taId);
 
   return result;
 }
 
 async function saveTugasAkhir(
+  accountId,
   lembarPersetujuan,
   lembarPengesahan,
   lembarKonsul1,
   lembarKonsul2,
   lembarRevisi
 ) {
+  const mshId = await findMahasiswaIdByAccountId(accountId);
   await addTugasAkhir(
+    mshId.id_mhs,
     lembarPersetujuan,
     lembarPengesahan,
     lembarKonsul1,
@@ -44,25 +46,36 @@ async function saveTugasAkhir(
   );
 }
 
-async function editTugasAkhir(taId, updateBody) {
-  const existingtA = await getTugasAkhirById(taId);
-
-  if (!existingtA) {
-    throw new ConflictError("Data tugas akhir tidak ditemukan");
-  }
-
-  taId = parseInt(taId);
-
-  const updateData = {
-    lembar_persetujuan:
-      updateBody.lembar_persetujuan ?? existingtA.lembar_persetujuan,
-    lembar_pengesahan:
-      updateBody.lembar_pengesahan ?? existingtA.lembar_pengesahan,
-    lembar_konsul_1: updateBody.lembar_konsul_1 ?? existingtA.lembar_konsul_1,
-    lembar_konsul_2: updateBody.lembar_konsul_2 ?? existingtA.lembar_konsul_2,
-    lembar_revisi: updateBody.lembar_revisi ?? existingtA.lembar_revisi,
-  };
-  await updateTugasAkhir(taId, updateData);
+async function editTugasAkhir(
+  accountId,
+  lembarPersetujuan,
+  lembarPengesahan,
+  lembarKonsul1,
+  lembarKonsul2,
+  lembarRevisi,
+  taId
+) {
+  const mhsId = await findMahasiswaIdByAccountId(accountId);
+  await updateTugasAkhir(
+    mhsId.id_mhs,
+    lembarPersetujuan,
+    lembarPengesahan,
+    lembarKonsul1,
+    lembarKonsul2,
+    lembarRevisi,
+    taId
+  );
 }
 
-export { showTugasAkhir, showTugasAkhirById, saveTugasAkhir, editTugasAkhir };
+async function editStatusTugasAkhir(accountId, rincian, status, taId) {
+  const pegawaiId = await findPegawaiIdByAccountId(accountId);
+  await updateStatusTugasAkhir(pegawaiId.id_pegawai, rincian, status, taId);
+}
+
+export {
+  showTugasAkhir,
+  showTugasAkhirById,
+  saveTugasAkhir,
+  editTugasAkhir,
+  editStatusTugasAkhir,
+};

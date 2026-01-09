@@ -18,6 +18,7 @@ async function getTugasAkhirById(taId) {
 }
 
 async function addTugasAkhir(
+  mhsId,
   lembarPersetujuan,
   lembarPengesahan,
   lembarKonsul1,
@@ -27,11 +28,12 @@ async function addTugasAkhir(
   await sibema.query(
     `
         INSERT INTO tugas_akhir
-        (lembar_persetujuan, lembar_pengesahan, lembar_konsul_1, lembar_konsul_2, lembar_revisi)
+        (id_mhs, lembar_persetujuan, lembar_pengesahan, lembar_konsul_1, lembar_konsul_2, lembar_revisi)
         VALUES
-        ($1, $2, $3, $4, $5)
+        ($1, $2, $3, $4, $5, $6)
     `,
     [
+      mhsId,
       lembarPersetujuan,
       lembarPengesahan,
       lembarKonsul1,
@@ -41,27 +43,57 @@ async function addTugasAkhir(
   );
 }
 
-async function updateTugasAkhir(taId, updateBody) {
+async function updateTugasAkhir(
+  mhsId,
+  lembarPersetujuan,
+  lembarPengesahan,
+  lembarKonsul1,
+  lembarKonsul2,
+  lembarRevisi,
+  taId
+) {
   await sibema.query(
     `
         UPDATE tugas_akhir
         SET
-        lembar_persetujuan = $1,
-        lembar_pengesahan = $2,
-        lembar_konsul_1 = $3,
-        lembar_konsul_2 = $4,
-        lembar_revisi = $5
-        WHERE id_ta = $6 
+        id_mhs =$1,
+        lembar_persetujuan = $2,
+        lembar_pengesahan = $3,
+        lembar_konsul_1 = $4,
+        lembar_konsul_2 = $5,
+        lembar_revisi = $6
+        WHERE id_ta = $7
     `,
     [
-      updateBody.lembar_persetujuan,
-      updateBody.lembar_pengesahan,
-      updateBody.lembar_konsul_1,
-      updateBody.lembar_konsul_2,
-      updateBody.lembar_revisi,
+      mhsId,
+      lembarPersetujuan,
+      lembarPengesahan,
+      lembarKonsul1,
+      lembarKonsul2,
+      lembarRevisi,
       taId,
     ]
   );
 }
 
-export { getTugasAkhir, getTugasAkhirById, addTugasAkhir, updateTugasAkhir };
+async function updateStatusTugasAkhir(pegawaiId, rincian, status, taId) {
+  await sibema.query(
+    `
+    UPDATE tugas_akhir
+    SET
+    id_pegawai = $1,
+    rincian = $2,
+    status = $3
+    WHERE id_ta = $4
+  `,
+    [pegawaiId, rincian, status, taId]
+  );
+}
+
+export {
+  getTugasAkhir,
+  getTugasAkhirById,
+  addTugasAkhir,
+  updateTugasAkhir,
+  updateStatusTugasAkhir,
+};
