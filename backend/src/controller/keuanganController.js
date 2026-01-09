@@ -1,6 +1,5 @@
 import fs from "fs";
 import BadRequestError from "../error/BadRequestError.js";
-import { findMahasiswaIdByAccountId } from "../model/mahasiswaModel.js";
 import {
   showKeuangan,
   showKeuanganById,
@@ -23,8 +22,9 @@ async function presentKeuangan(req, res, next) {
 async function presentKeuanganById(req, res, next) {
   try {
     const keuanganId = req.params.id_keuangan;
-    const result = await showKeuanganById(keuanganId);
+    keuanganId = parseInt(keuanganId);
 
+    const result = await showKeuanganById(keuanganId);
     return res.status(200).json({ status: 200, data: result });
   } catch (err) {
     console.log(err);
@@ -36,13 +36,13 @@ async function newKeuangan(req, res, next) {
   try {
     const keuanganPath = req.file ? req.file.path : null;
     const accountId = req.user.id;
-    const mhsId = await findMahasiswaIdByAccountId(accountId);
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
 
-    await saveKeuangan(mhsId.id_mhs, keuanganPath);
+    accountId = parseInt(accountId);
+    await saveKeuangan(accountId, keuanganPath);
     return res
       .status(201)
       .json({ status: 201, message: "Berhasil menambahkan data keuangan" });
@@ -66,13 +66,13 @@ async function changeKeuangan(req, res, next) {
     const keuanganPath = req.file ? req.file.path : null;
     const existingKeuangan = getKeuanganById(keuanganId);
     let accountId = req.user.id;
-    let mhsId = await findMahasiswaIdByAccountId(accountId);
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
 
-    await editKeuangan(mhsId.id_mhs, keuanganPath, keuanganId);
+    accountId = parseInt(accountId);
+    await editKeuangan(accountId, keuanganPath, keuanganId);
 
     if (req.file && existingKeuangan.dokumen_keuangan) {
       fs.unlink(existingKeuangan.dokumen_keuangan, (error) => {

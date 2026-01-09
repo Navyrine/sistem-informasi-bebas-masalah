@@ -1,3 +1,4 @@
+import { findMahasiswaIdByAccountId } from "../model/mahasiswaModel.js";
 import ConflictError from "../error/ConflictError.js";
 import {
   getKeuangan,
@@ -8,7 +9,6 @@ import {
 
 async function showKeuangan() {
   const result = await getKeuangan();
-
   if (result.length === 0) {
     throw new ConflictError("Data keuangan tidak ditemukan");
   }
@@ -17,8 +17,6 @@ async function showKeuangan() {
 }
 
 async function showKeuanganById(keuanganId) {
-  keuanganId = parseInt(keuanganId);
-
   const result = await getKeuanganById(keuanganId);
   if (!result) {
     throw new ConflictError("Data keuangan tidak ditemukan");
@@ -27,16 +25,14 @@ async function showKeuanganById(keuanganId) {
   return result;
 }
 
-async function saveKeuangan(mhsId, dokumenKeuangan) {
-  mhsId = parseInt(mhsId);
-  await addKeuangan(mhsId, dokumenKeuangan);
+async function saveKeuangan(accountId, dokumenKeuangan) {
+  const mhsId = findMahasiswaIdByAccountId(accountId);
+  await addKeuangan(mhsId.id_mhs, dokumenKeuangan);
 }
 
-async function editKeuangan(mhsId, dokumenKeuangan, keuanganId) {
-  mhsId = parseInt(mhsId);
-  keuanganId = parseInt(keuanganId);
-
-  await updateKeuangan(mhsId, dokumenKeuangan, keuanganId);
+async function editKeuangan(accountId, dokumenKeuangan, keuanganId) {
+  const mhsId = findMahasiswaIdByAccountId(accountId);
+  await updateKeuangan(mhsId.id_mhs, dokumenKeuangan, keuanganId);
 }
 
 export { showKeuangan, showKeuanganById, saveKeuangan, editKeuangan };
