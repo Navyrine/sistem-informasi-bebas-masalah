@@ -20,9 +20,10 @@ async function presentBerita(req, res, next) {
 
 async function presentBeritaById(req, res, next) {
   try {
-    const beritaId = req.params.id_berita;
-    const result = await showBeritaById(beritaId);
+    let beritaId = req.params.id_berita;
+    beritaId = parseInt(beritaId);
 
+    const result = await showBeritaById(beritaId);
     return res.status(200).json({ status: 200, data: result });
   } catch (err) {
     console.log(err);
@@ -32,9 +33,26 @@ async function presentBeritaById(req, res, next) {
 
 async function newBerita(req, res, next) {
   try {
-    const accountId = req.user.id;
-    const { judul, konten } = req.body;
-    const gambarPath = req.file ? req.file.path : null;
+    let accountId = req.user.id;
+    let { judul, konten } = req.body;
+
+    if (!judul) {
+      throw new BadRequestError("Judul tidak boleh kosong");
+    }
+
+    if (!konten) {
+      throw new BadRequestError("Konten tidak boleh kosong");
+    }
+
+    if (!req.file) {
+      throw new BadRequestError("Gambar tidak boleh kosong");
+    }
+
+    let gambarPath = req.file ? req.file.path : null;
+
+    accountId = parseInt(accountId);
+    judul = judul.trim();
+    konten = konten.trim();
 
     await saveBerita(accountId, judul, konten, gambarPath);
     return res
@@ -56,11 +74,32 @@ async function newBerita(req, res, next) {
 
 async function changeBerita(req, res, next) {
   try {
-    const accountId = req.user.id;
-    const beritaId = req.params.id_berita;
-    const { judul, konten } = req.body;
-    const existingBerita = await showBeritaById(beritaId);
-    const gambarPath = req.file ? req.file.path : null;
+    let accountId = req.user.id;
+    let beritaId = req.params.id_berita;
+    let { judul, konten } = req.body;
+    let existingBerita = await showBeritaById(beritaId);
+    let gambarPath = req.file ? req.file.path : null;
+
+    if (!judul) {
+      throw new BadRequestError("Judul tidak boleh kosong");
+    }
+
+    if (!konten) {
+      throw new BadRequestError("Konten tidak boleh kosong");
+    }
+
+    if (!existingBerita) {
+      throw new ConflictError("Data berita tidak ditemukan");
+    }
+
+    if (!req.file) {
+      gambarPath = existingBerita.gambar;
+    }
+
+    accountId = parseInt(accountId);
+    judul = judul.trim();
+    konten = konten.trim();
+    beritaId = parseInt(beritaId);
 
     await editBerita(accountId, judul, konten, gambarPath, beritaId);
 
@@ -86,7 +125,8 @@ async function changeBerita(req, res, next) {
 
 async function remove(req, res, next) {
   try {
-    const beritaId = req.params.id_berita;
+    let beritaId = req.params.id_berita;
+    beritaId = parseInt(beritaId);
 
     await removeBerita(beritaId);
     return res
