@@ -17,29 +17,30 @@ async function getBeritaById(beritaId) {
   return result;
 }
 
-async function addBerita(judul, konten, gambar) {
+async function addBerita(pegawaiId, judul, konten, gambar) {
   await sibema.query(
     `
         INSERT INTO berita
-        (judul, konten, gambar)
+        (id_pegawai, judul, konten, gambar)
         VALUES
-        ($1, $2, $3)    
+        ($1, $2, $3, $4)    
     `,
-    [judul, konten, gambar]
+    [pegawaiId, judul, konten, gambar]
   );
 }
 
-async function updateBerita(beritaId, judul, konten, gambar) {
+async function updateBerita(pegawaiId, judul, konten, gambar, beritaId) {
   await sibema.query(
     `
         UPDATE berita
         SET
-        judul = $1,
-        konten = $2,
-        gambar = $3
-        WHERE id_berita = $4
+        id_pegawai = $1,
+        judul = $2,
+        konten = $3,
+        gambar = $4
+        WHERE id_berita = $5
     `,
-    [judul, konten, gambar, beritaId]
+    [pegawaiId, judul, konten, gambar, beritaId]
   );
 }
 

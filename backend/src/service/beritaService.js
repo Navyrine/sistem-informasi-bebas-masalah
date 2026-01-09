@@ -7,6 +7,7 @@ import {
   updateBerita,
   deleteBerita,
 } from "../model/beritaModel.js";
+import { findPegawaiIdByAccountId } from "../model/pegawaiModel.js";
 
 async function showBerita() {
   const result = await getBerita();
@@ -28,7 +29,7 @@ async function showBeritaById(beritaId) {
   return result;
 }
 
-async function saveBerita(judul, konten, gambar) {
+async function saveBerita(accountId, judul, konten, gambar) {
   if (!judul) {
     throw new BadRequestError("Judul tidak boleh kosong");
   }
@@ -41,13 +42,15 @@ async function saveBerita(judul, konten, gambar) {
     throw new BadRequestError("Gambar tidak boleh kosong");
   }
 
+  accountId = parseInt(accountId);
   judul = judul.trim();
   konten = konten.trim();
 
-  await addBerita(judul, konten, gambar);
+  const pegawaiId = await findPegawaiIdByAccountId(accountId);
+  await addBerita(pegawaiId.id_pegawai, judul, konten, gambar);
 }
 
-async function editBerita(beritaId, judul, konten, gambar) {
+async function editBerita(accountId, judul, konten, gambar, beritaId) {
   if (!judul) {
     throw new BadRequestError("Judul tidak boleh kosong");
   }
@@ -62,15 +65,17 @@ async function editBerita(beritaId, judul, konten, gambar) {
     throw new ConflictError("Data berita tidak ditemukan");
   }
 
-  beritaId = parseInt(beritaId);
+  accountId = parseInt(accountId);
   judul = judul.trim();
   konten = konten.trim();
+  beritaId = parseInt(beritaId);
 
   if (!gambar) {
     gambar = existingBerita.gambar;
   }
 
-  await updateBerita(beritaId, judul, konten, gambar);
+  const pegawaiId = await findPegawaiIdByAccountId(accountId);
+  await updateBerita(pegawaiId.id_pegawai, judul, konten, gambar, beritaId);
 }
 
 async function removeBerita(beritaId) {

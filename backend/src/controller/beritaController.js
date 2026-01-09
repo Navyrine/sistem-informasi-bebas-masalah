@@ -32,10 +32,11 @@ async function presentBeritaById(req, res, next) {
 
 async function newBerita(req, res, next) {
   try {
+    const accountId = req.user.id;
     const { judul, konten } = req.body;
     const gambarPath = req.file ? req.file.path : null;
 
-    await saveBerita(judul, konten, gambarPath);
+    await saveBerita(accountId, judul, konten, gambarPath);
     return res
       .status(201)
       .json({ status: 201, message: "Berhasil menambahkan berita" });
@@ -55,12 +56,13 @@ async function newBerita(req, res, next) {
 
 async function changeBerita(req, res, next) {
   try {
+    const accountId = req.user.id;
     const beritaId = req.params.id_berita;
     const { judul, konten } = req.body;
     const existingBerita = await showBeritaById(beritaId);
     const gambarPath = req.file ? req.file.path : null;
 
-    await editBerita(beritaId, judul, konten, gambarPath);
+    await editBerita(accountId, judul, konten, gambarPath, beritaId);
 
     if (req.file && existingBerita.gambar) {
       fs.unlink(existingBerita.gambar, (error) => {

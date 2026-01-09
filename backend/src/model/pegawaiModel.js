@@ -27,6 +27,16 @@ async function getPegawaiId(namaPegawai) {
   return result;
 }
 
+async function findPegawaiIdByAccountId(accountId) {
+  const query = await sibema.query(
+    "SELECT id_pegawai FROM pegawai WHERE id_account = $1",
+    [accountId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
 async function addPegawai(namaPegawai, noTelp, alamat) {
   await sibema.query(
     `
@@ -67,6 +77,7 @@ export {
   getPegawai,
   getPegawaiById,
   getPegawaiId,
+  findPegawaiIdByAccountId,
   addPegawai,
   updateAccountId,
   updatePegawai,

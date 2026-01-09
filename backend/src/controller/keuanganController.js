@@ -37,7 +37,6 @@ async function newKeuangan(req, res, next) {
     const keuanganPath = req.file ? req.file.path : null;
     const accountId = req.user.id;
     const mhsId = await findMahasiswaIdByAccountId(accountId);
-    console.log(mhsId);
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
