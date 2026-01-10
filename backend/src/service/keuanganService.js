@@ -4,6 +4,7 @@ import { findPegawaiIdByAccountId } from "../model/pegawaiModel.js";
 import {
   getKeuangan,
   getKeuanganById,
+  getStatusKeuanganByMhsId,
   addKeuangan,
   updateKeuangan,
   updateStatusKeuangan,
@@ -12,6 +13,17 @@ import {
 async function showKeuangan() {
   const result = await getKeuangan();
   if (result.length === 0) {
+    throw new ConflictError("Data keuangan tidak ditemukan");
+  }
+
+  return result;
+}
+
+async function showStatusKeuanganByMhsId(accountId) {
+  const mhsId = await findMahasiswaIdByAccountId(accountId);
+  const result = await getStatusKeuanganByMhsId(mhsId.id_mhs);
+
+  if (!result) {
     throw new ConflictError("Data keuangan tidak ditemukan");
   }
 
@@ -45,6 +57,7 @@ async function editStatusKeuangan(accountId, rincian, status, keuanganId) {
 export {
   showKeuangan,
   showKeuanganById,
+  showStatusKeuanganByMhsId,
   saveKeuangan,
   editKeuangan,
   editStatusKeuangan,

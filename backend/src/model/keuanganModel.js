@@ -1,7 +1,17 @@
 import sibema from "../config/sibema.js";
 
 async function getKeuangan() {
-  const query = await sibema.query("SELECT * FROM keuangan");
+  const query = await sibema.query(`
+    SELECT
+    keuangan.id_keuangan,
+    keuangan.id_mhs,
+    nama_mhs,
+    dokumen_keuangan,
+    keuangan.rincian,
+    keuangan.status
+    FROM keuangan
+    LEFT JOIN mahasiswa ON keuangan.id_mhs = mahasiswa.id_mhs
+  `);
   const result = query.rows;
 
   return result;
@@ -9,8 +19,41 @@ async function getKeuangan() {
 
 async function getKeuanganById(keuanganId) {
   const query = await sibema.query(
-    "SELECT * FROM keuangan WHERE id_keuangan = $1",
+    `
+    SELECT
+    keuangan.id_keuangan,
+    keuangan.id_pegawai,
+    keuangan.id_mhs,
+    nama_pegawai,
+    nama_mhs,
+    dokumen_keuangan,
+    keuangan.rincian,
+    keuangan.status
+    FROM keuangan
+    LEFT JOIN pegawai ON keuangan.id_pegawai = pegawai.id_pegawai
+    LEFT JOIN mahasiswa ON keuangan.id_mhs = mahasiswa.id_mhs
+    WHERE id_keuangan = $1
+  `,
     [keuanganId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
+async function getStatusKeuanganByMhsId(mhsId) {
+  const query = await sibema.query(
+    `
+    SELECT
+    keuangan.id_keuangan,
+    keuangan.id_mhs,
+    nama_mhs,
+    keuangan.status
+    FROM keuangan
+    LEFT JOIN mahasiswa ON keuangan.id_mhs = mahasiswa.id_mhs
+    WHERE keuangan.id_mhs = $1
+  `,
+    [mhsId]
   );
   const result = query.rows[0];
 
@@ -54,6 +97,7 @@ async function updateStatusKeuangan(pegawaiId, rincian, status, keuanganId) {
 export {
   getKeuangan,
   getKeuanganById,
+  getStatusKeuanganByMhsId,
   addKeuangan,
   updateKeuangan,
   updateStatusKeuangan,

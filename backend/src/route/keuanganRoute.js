@@ -4,6 +4,7 @@ import authorize from "../middleware/roleMiddleware.js";
 import handleFileKeuangan from "../middleware/handleFileKeuangan.js";
 import {
   presentKeuangan,
+  presentStatusKeuanganByMhsId,
   presentKeuanganById,
   newKeuangan,
   changeKeuangan,
@@ -19,6 +20,12 @@ keuanganRoute.get(
   presentKeuangan
 );
 keuanganRoute.get(
+  "/keuangan/status",
+  authenticate,
+  authorize("mahasiswa"),
+  presentStatusKeuanganByMhsId
+);
+keuanganRoute.get(
   "/keuangan/:id_keuangan",
   authenticate,
   authorize("mahasiswa", "pengawas_keuangan"),
@@ -32,17 +39,17 @@ keuanganRoute.post(
   newKeuangan
 );
 keuanganRoute.put(
+  "/keuangan/status/:id_keuangan",
+  authenticate,
+  authorize("pengawas_keuangan"),
+  changeStatusKeuangan
+);
+keuanganRoute.put(
   "/keuangan/:id_keuangan",
   authenticate,
   authorize("mahasiswa"),
   handleFileKeuangan.single("keuangan"),
   changeKeuangan
-);
-keuanganRoute.put(
-  "/keuangan/status/:id_keuangan",
-  authenticate,
-  authorize("pengawas_keuangan"),
-  changeStatusKeuangan
 );
 
 export default keuanganRoute;

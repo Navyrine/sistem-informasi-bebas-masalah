@@ -3,6 +3,7 @@ import BadRequestError from "../error/BadRequestError.js";
 import {
   showKeuangan,
   showKeuanganById,
+  showStatusKeuanganByMhsId,
   saveKeuangan,
   editKeuangan,
   editStatusKeuangan,
@@ -20,9 +21,25 @@ async function presentKeuangan(req, res, next) {
   }
 }
 
+async function presentStatusKeuanganByMhsId(req, res, next) {
+  try {
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
+
+    const result = await showStatusKeuanganByMhsId(accountId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
 async function presentKeuanganById(req, res, next) {
   try {
-    const keuanganId = req.params.id_keuangan;
+    let keuanganId = req.params.id_keuangan;
     keuanganId = parseInt(keuanganId);
 
     const result = await showKeuanganById(keuanganId);
@@ -36,7 +53,7 @@ async function presentKeuanganById(req, res, next) {
 async function newKeuangan(req, res, next) {
   try {
     const keuanganPath = req.file ? req.file.path : null;
-    const accountId = req.user.id;
+    let accountId = req.user.id;
 
     if (!keuanganPath) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
@@ -63,7 +80,7 @@ async function newKeuangan(req, res, next) {
 
 async function changeKeuangan(req, res, next) {
   try {
-    const keuanganId = req.params.id_keuangan;
+    let keuanganId = req.params.id_keuangan;
     const keuanganPath = req.file ? req.file.path : null;
     const existingKeuangan = getKeuanganById(keuanganId);
     let accountId = req.user.id;
@@ -73,6 +90,8 @@ async function changeKeuangan(req, res, next) {
     }
 
     accountId = parseInt(accountId);
+    keuanganId = parseInt(keuanganId);
+
     await editKeuangan(accountId, keuanganPath, keuanganId);
 
     if (req.file && existingKeuangan.dokumen_keuangan) {
@@ -82,9 +101,10 @@ async function changeKeuangan(req, res, next) {
         }
       });
     }
-    return res
-      .status(201)
-      .json({ status: 200, message: "Berhasil mengubah data keuangan" });
+    return res.status(201).json({
+      status: 200,
+      message: "Berhasil mengubah data keuangan",
+    });
   } catch (err) {
     if (req.file) {
       fs.unlink(req.file.path, () => {});
@@ -112,7 +132,7 @@ async function changeStatusKeuangan(req, res, next) {
     keuanganId = parseInt(keuanganId);
     accountId = parseInt(accountId);
     rincian = rincian.trim();
-    status = status.trim();
+    status = status.toLowerCase().trim();
 
     await editStatusKeuangan(accountId, rincian, status, keuanganId);
     return res.status(200).json({
@@ -127,6 +147,7 @@ async function changeStatusKeuangan(req, res, next) {
 
 export {
   presentKeuangan,
+  presentStatusKeuanganByMhsId,
   presentKeuanganById,
   newKeuangan,
   changeKeuangan,
