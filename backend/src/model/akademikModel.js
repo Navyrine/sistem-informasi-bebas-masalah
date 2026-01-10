@@ -1,7 +1,20 @@
 import sibema from "../config/sibema.js";
 
 async function getAkademik() {
-  const query = await sibema.query("SELECT * FROM akademik");
+  const query = await sibema.query(`
+    SELECT
+    id_akademik,
+    khs_sem_1,  
+    khs_sem_2,  
+    khs_sem_3,  
+    khs_sem_4,  
+    khs_sem_5,  
+    khs_sem_6,  
+    lembar_sp,
+    rincian,
+    status
+    FROM akademik
+  `);
   const result = query.rows;
 
   return result;
@@ -9,7 +22,36 @@ async function getAkademik() {
 
 async function getAkademikById(akademikId) {
   const query = await sibema.query(
-    "SELECT * FROM akademik WHERE id_akademik = $1",
+    `
+    SELECT
+    id_akademik,
+    khs_sem_1, 
+    khs_sem_2, 
+    khs_sem_3, 
+    khs_sem_4, 
+    khs_sem_5, 
+    khs_sem_6, 
+    lembar_sp
+    FROM akademik 
+    WHERE id_akademik = $1  
+  `,
+    [akademikId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
+async function getStatusAkademikById(akademikId) {
+  const query = await sibema.query(
+    `
+    SELECT
+    id_akademik,
+    rincian,
+    status
+    FROM akademik
+    WHERE id_akademik = $1  
+  `,
     [akademikId]
   );
   const result = query.rows[0];
@@ -18,6 +60,7 @@ async function getAkademikById(akademikId) {
 }
 
 async function addAkademik(
+  mhsId,
   khsSem1,
   khsSem2,
   khsSem3,
@@ -29,39 +72,72 @@ async function addAkademik(
   await sibema.query(
     `
         INSERT INTO akademik
-        (khs_sem_1, khs_sem_2, khs_sem_3, khs_sem_4, khs_sem_5, khs_sem_6, lembar_sp)
+        (id_mhs, khs_sem_1, khs_sem_2, khs_sem_3, khs_sem_4, khs_sem_5, khs_sem_6, lembar_sp)
         VALUES
-        ($1, $2, $3, $4, $5, $6, $7)
+        ($1, $2, $3, $4, $5, $6, $7, $8)
     `,
-    [khsSem1, khsSem2, khsSem3, khsSem4, khsSem5, khsSem6, lembarSp]
+    [mhsId, khsSem1, khsSem2, khsSem3, khsSem4, khsSem5, khsSem6, lembarSp]
   );
 }
 
-async function updateAkademik(updateData, akademikId) {
+async function updateAkademik(
+  mhsId,
+  khsSem1,
+  khsSem2,
+  khsSem3,
+  khsSem4,
+  khsSem5,
+  khsSem6,
+  lembarSp,
+  akademikId
+) {
   await sibema.query(
     `
         UPDATE akademik
         SET
-        khs_sem_1 = $1,
-        khs_sem_2 = $2,
-        khs_sem_3 = $3,
-        khs_sem_4 = $4,
-        khs_sem_5 = $5,
-        khs_sem_6 = $6,
-        lembar_sp = $7
-        WHERE id_akademik = $8
+        id_mhs = $1,
+        khs_sem_1 = $2,
+        khs_sem_2 = $3,
+        khs_sem_3 = $4,
+        khs_sem_4 = $5,
+        khs_sem_5 = $6,
+        khs_sem_6 = $7,
+        lembar_sp = $8
+        WHERE id_akademik = $9
     `,
     [
-      updateData.khs_sem_1,
-      updateData.khs_sem_2,
-      updateData.khs_sem_3,
-      updateData.khs_sem_4,
-      updateData.khs_sem_5,
-      updateData.khs_sem_6,
-      updateData.lembar_sp,
+      mhsId,
+      khsSem1,
+      khsSem2,
+      khsSem3,
+      khsSem4,
+      khsSem5,
+      khsSem6,
+      lembarSp,
       akademikId,
     ]
   );
 }
 
-export { getAkademik, getAkademikById, addAkademik, updateAkademik };
+async function updateStatusAkademik(pegawaiId, rincian, status, akademikId) {
+  await sibema.query(
+    `
+    UPDATE akademik
+    SET
+    id_pegawai = $1,
+    rincian = $2,
+    status = $3
+    WHERE id_akademik = $4  
+  `,
+    [pegawaiId, rincian, status, akademikId]
+  );
+}
+
+export {
+  getAkademik,
+  getAkademikById,
+  getStatusAkademikById,
+  addAkademik,
+  updateAkademik,
+  updateStatusAkademik,
+};

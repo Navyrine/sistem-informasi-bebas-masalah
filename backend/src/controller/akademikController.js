@@ -1,18 +1,22 @@
 import fs from "fs";
 import BadRequestError from "../error/BadRequestError.js";
-import { getAkademikById } from "../model/akademikModel.js";
 import {
   showAkademik,
   showAkademikById,
+  showStatusAkademikById,
   saveAkademik,
   editAkademik,
+  editStatusAkademik,
 } from "../service/akademikService.js";
 
 async function presentAkademik(req, res, next) {
   try {
     const result = await showAkademik();
 
-    return res.status(200).json({ status: 200, data: result });
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
   } catch (err) {
     console.log(err);
     next(err);
@@ -21,10 +25,30 @@ async function presentAkademik(req, res, next) {
 
 async function presentAkademikById(req, res, next) {
   try {
-    const akademikId = req.params.id_akademik;
-    const result = await showAkademikById(akademikId);
+    let akademikId = req.params.id_akademik;
+    akademikId = parseInt(akademikId);
 
-    return res.status(200).json({ status: 200, data: result });
+    const result = await showAkademikById(akademikId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentStatusAkademikById(req, res, next) {
+  try {
+    let akademikId = req.params.id_akademik;
+    akademikId = parseInt(akademikId);
+
+    const result = await showStatusAkademikById(akademikId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
   } catch (err) {
     console.log(err);
     next(err);
@@ -33,6 +57,7 @@ async function presentAkademikById(req, res, next) {
 
 async function newAkademik(req, res, next) {
   try {
+    let accountId = req.user.id;
     const khsSem1Field = req.files["khs_sem_1"];
     const khsSem2Field = req.files["khs_sem_2"];
     const khsSem3Field = req.files["khs_sem_3"];
@@ -69,6 +94,8 @@ async function newAkademik(req, res, next) {
       throw new BadRequestError("Dokumen lembar sp wajib diisi");
     }
 
+    accountId = parseInt(accountId);
+
     const khsSem1Path = req?.files["khs_sem_1"]?.[0]?.path;
     const khsSem2Path = req?.files["khs_sem_2"]?.[0]?.path;
     const khsSem3Path = req?.files["khs_sem_3"]?.[0]?.path;
@@ -78,6 +105,7 @@ async function newAkademik(req, res, next) {
     const lembarSpPath = req?.files["lembar_sp"]?.[0]?.path;
 
     await saveAkademik(
+      accountId,
       khsSem1Path,
       khsSem2Path,
       khsSem3Path,
@@ -87,9 +115,10 @@ async function newAkademik(req, res, next) {
       lembarSpPath
     );
 
-    return res
-      .status(201)
-      .json({ status: 201, message: "Berhasil menambahkan data akademik" });
+    return res.status(201).json({
+      status: 201,
+      message: "Berhasil menambahkan data akademik",
+    });
   } catch (err) {
     Object.values(req.files || {})
       .flat()
@@ -104,70 +133,71 @@ async function newAkademik(req, res, next) {
 
 async function changeAkademik(req, res, next) {
   try {
-    const akademikId = req.params.id_akademik;
-    const fileAkademik = req.files;
+    let akademikId = req.params.id_akademik;
+    let accountId = req.user.id;
+    const khsSem1Field = req.files["khs_sem_1"];
+    const khsSem2Field = req.files["khs_sem_2"];
+    const khsSem3Field = req.files["khs_sem_3"];
+    const khsSem4Field = req.files["khs_sem_4"];
+    const khsSem5Field = req.files["khs_sem_5"];
+    const khsSem6Field = req.files["khs_sem_6"];
+    const lembarSpField = req.files["lembar_sp"];
 
-    if (!fileAkademik["khs_sem_1"]) {
+    if (!khsSem1Field) {
       throw new BadRequestError("Dokumen khs semester 1 wajib diisi");
     }
 
-    if (!fileAkademik["khs_sem_2"]) {
+    if (!khsSem2Field) {
       throw new BadRequestError("Dokumen khs semester 2 wajib diisi");
     }
 
-    if (!fileAkademik["khs_sem_3"]) {
+    if (!khsSem3Field) {
       throw new BadRequestError("Dokumen khs semester 3 wajib diisi");
     }
 
-    if (!fileAkademik["khs_sem_4"]) {
+    if (!khsSem4Field) {
       throw new BadRequestError("Dokumen khs semester 4 wajib diisi");
     }
 
-    if (!fileAkademik["khs_sem_5"]) {
+    if (!khsSem5Field) {
       throw new BadRequestError("Dokumen khs semester 5 wajib diisi");
     }
 
-    if (!fileAkademik["khs_sem_6"]) {
+    if (!khsSem6Field) {
       throw new BadRequestError("Dokumen khs semester 6 wajib diisi");
     }
 
-    if (!fileAkademik["lembar_sp"]) {
+    if (!lembarSpField) {
       throw new BadRequestError("Dokumen lembar sp wajib diisi");
     }
 
-    const existingtAkademik = await getAkademikById(akademikId);
-    const update = {
-      khs_sem_1:
-        fileAkademik["khs_sem_1"]?.[0]?.path ?? existingtAkademik.khs_sem_1,
-      khs_sem_2:
-        fileAkademik["khs_sem_2"]?.[0]?.path ?? existingtAkademik.khs_sem_2,
-      khs_sem_3:
-        fileAkademik["khs_sem_3"]?.[0]?.path ?? existingtAkademik.khs_sem_3,
-      khs_sem_4:
-        fileAkademik["khs_sem_4"]?.[0]?.path ?? existingtAkademik.khs_sem_4,
-      khs_sem_5:
-        fileAkademik["khs_sem_5"]?.[0]?.path ?? existingtAkademik.khs_sem_5,
-      khs_sem_6:
-        fileAkademik["khs_sem_6"]?.[0]?.path ?? existingtAkademik.khs_sem_6,
-      lembar_sp:
-        fileAkademik["lembar_sp"]?.[0]?.path ?? existingtAkademik.lembar_sp,
-    };
+    akademikId = parseInt(akademikId);
+    accountId = parseInt(accountId);
 
-    await editAkademik(update, akademikId);
+    const khsSem1Path = req?.files["khs_sem_1"]?.[0]?.path;
+    const khsSem2Path = req?.files["khs_sem_2"]?.[0]?.path;
+    const khsSem3Path = req?.files["khs_sem_3"]?.[0]?.path;
+    const khsSem4Path = req?.files["khs_sem_4"]?.[0]?.path;
+    const khsSem5Path = req?.files["khs_sem_5"]?.[0]?.path;
+    const khsSem6Path = req?.files["khs_sem_6"]?.[0]?.path;
+    const lembarSpPath = req?.files["lembar_sp"]?.[0]?.path;
 
-    Object.keys(update).forEach((key) => {
-      if (
-        fileAkademik[key] &&
-        existingtAkademik[key] &&
-        existingtAkademik[key] !== update[key]
-      ) {
-        fs.unlink(existingtAkademik[key], () => {});
-      }
+    await editAkademik(
+      accountId,
+      khsSem1Path,
+      khsSem2Path,
+      khsSem3Path,
+      khsSem4Path,
+      khsSem5Path,
+      khsSem6Path,
+      lembarSpPath,
+      akademikId
+    );
+
+    return res.status(200).json({
+      status: 200,
+      message: "Berhasil mengubah data akademik",
     });
-
-    return res
-      .status(200)
-      .json({ status: 200, message: "Berhasil mengubah data akademik" });
   } catch (err) {
     Object.values(req.files || {})
       .flat()
@@ -180,4 +210,39 @@ async function changeAkademik(req, res, next) {
   }
 }
 
-export { presentAkademik, presentAkademikById, newAkademik, changeAkademik };
+async function changeStatusAkademik(req, res, next) {
+  try {
+    let akademikId = req.params.id_akademik;
+    let accountId = req.user.id;
+    const { rincian, status } = req.body;
+
+    if (!rincian) {
+      throw new BadRequestError("Rincian tidak boleh kosong");
+    }
+
+    if (!status) {
+      throw new BadRequestError("Status tidak boleh kosong");
+    }
+
+    akademikId = parseInt(akademikId);
+    accountId = parseInt(accountId);
+
+    await editStatusAkademik(accountId, rincian, status, akademikId);
+    return res.status(200).json({
+      status: 200,
+      message: "Berhasil mengubah status akademik",
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+export {
+  presentAkademik,
+  presentAkademikById,
+  presentStatusAkademikById,
+  newAkademik,
+  changeAkademik,
+  changeStatusAkademik,
+};
