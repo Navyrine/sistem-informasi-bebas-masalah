@@ -3,7 +3,9 @@ import sibema from "../config/sibema.js";
 async function getAkademik() {
   const query = await sibema.query(`
     SELECT
-    id_akademik,
+    akademik.id_akademik,
+    akademik.id_mhs,
+    nama_mhs
     khs_sem_1,  
     khs_sem_2,  
     khs_sem_3,  
@@ -11,9 +13,10 @@ async function getAkademik() {
     khs_sem_5,  
     khs_sem_6,  
     lembar_sp,
-    rincian,
-    status
+    akademik.rincian,
+    akademik.status
     FROM akademik
+    LEFT JOIN mahasiswa ON akademik.id_mhs = mahasiswa.id_mhs
   `);
   const result = query.rows;
 
@@ -24,15 +27,23 @@ async function getAkademikById(akademikId) {
   const query = await sibema.query(
     `
     SELECT
-    id_akademik,
+    akademik.id_akademik,
+    akademik.id_pegawai,
+    akademik.id_mhs,
+    nama_pegawai,
+    nama_mhs,
     khs_sem_1, 
     khs_sem_2, 
     khs_sem_3, 
     khs_sem_4, 
     khs_sem_5, 
     khs_sem_6, 
-    lembar_sp
-    FROM akademik 
+    lembar_sp,
+    akademik.rincian,
+    akademik.status
+    FROM akademik
+    LEFT JOIN pegawai ON akademik.id_pegawai = pegawai.id_pegawai
+    LEFT JOIN mahasiswa ON akademik.id_mhs = mahasiswa.id_mhs
     WHERE id_akademik = $1  
   `,
     [akademikId]
@@ -42,17 +53,20 @@ async function getAkademikById(akademikId) {
   return result;
 }
 
-async function getStatusAkademikById(akademikId) {
+async function getStatusAkademikByMhsId(mhsId) {
   const query = await sibema.query(
     `
     SELECT
-    id_akademik,
-    rincian,
-    status
+    akademik.id_akademik,
+    akademik.id_mhs,
+    nama_mhs,
+    akademik.rincian,
+    akademik.status
     FROM akademik
-    WHERE id_akademik = $1  
+    LEFT JOIN mahasiswa ON akademik.id_mhs = mahasiswa.id_mhs
+    WHERE akademik.id_mhs = $1
   `,
-    [akademikId]
+    [mhsId]
   );
   const result = query.rows[0];
 
@@ -136,7 +150,7 @@ async function updateStatusAkademik(pegawaiId, rincian, status, akademikId) {
 export {
   getAkademik,
   getAkademikById,
-  getStatusAkademikById,
+  getStatusAkademikByMhsId,
   addAkademik,
   updateAkademik,
   updateStatusAkademik,

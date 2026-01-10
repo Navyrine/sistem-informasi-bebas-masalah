@@ -5,7 +5,7 @@ import authorize from "../middleware/roleMiddleware.js";
 import {
   presentAkademik,
   presentAkademikById,
-  presentStatusAkademikById,
+  presentStatusAkademikByMhsId,
   newAkademik,
   changeAkademik,
   changeStatusAkademik,
@@ -20,10 +20,10 @@ akademikRoute.get(
   presentAkademik
 );
 akademikRoute.get(
-  "/akademik/status/:id_akademik",
+  "/akademik/status",
   authenticate,
-  authorize("pengawas_akademik"),
-  presentStatusAkademikById
+  authorize("mahasiswa"),
+  presentStatusAkademikByMhsId
 );
 akademikRoute.get(
   "/akademik/:id_akademik",

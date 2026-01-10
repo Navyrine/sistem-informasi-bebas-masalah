@@ -3,7 +3,7 @@ import BadRequestError from "../error/BadRequestError.js";
 import {
   showAkademik,
   showAkademikById,
-  showStatusAkademikById,
+  showStatusAkademikByMhsId,
   saveAkademik,
   editAkademik,
   editStatusAkademik,
@@ -12,7 +12,6 @@ import {
 async function presentAkademik(req, res, next) {
   try {
     const result = await showAkademik();
-
     return res.status(200).json({
       status: 200,
       data: result,
@@ -39,12 +38,12 @@ async function presentAkademikById(req, res, next) {
   }
 }
 
-async function presentStatusAkademikById(req, res, next) {
+async function presentStatusAkademikByMhsId(req, res, next) {
   try {
-    let akademikId = req.params.id_akademik;
-    akademikId = parseInt(akademikId);
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
 
-    const result = await showStatusAkademikById(akademikId);
+    const result = await showStatusAkademikByMhsId(accountId);
     return res.status(200).json({
       status: 200,
       data: result,
@@ -241,7 +240,7 @@ async function changeStatusAkademik(req, res, next) {
 export {
   presentAkademik,
   presentAkademikById,
-  presentStatusAkademikById,
+  presentStatusAkademikByMhsId,
   newAkademik,
   changeAkademik,
   changeStatusAkademik,

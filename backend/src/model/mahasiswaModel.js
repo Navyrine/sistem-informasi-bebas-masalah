@@ -55,11 +55,11 @@ async function findMahasiswaId(namaMhs) {
 }
 
 async function findMahasiswaIdByAccountId(accountId) {
-  const query = sibema.query(
+  const query = await sibema.query(
     "SELECT id_mhs FROM mahasiswa WHERE id_account = $1",
     [accountId]
   );
-  const result = (await query).rows[0];
+  const result = query.rows[0];
 
   return result;
 }

@@ -4,7 +4,7 @@ import { findPegawaiIdByAccountId } from "../model/pegawaiModel.js";
 import {
   getAkademik,
   getAkademikById,
-  getStatusAkademikById,
+  getStatusAkademikByMhsId,
   addAkademik,
   updateAkademik,
   updateStatusAkademik,
@@ -28,8 +28,11 @@ async function showAkademikById(akademikId) {
   return result;
 }
 
-async function showStatusAkademikById(akademikId) {
-  const result = await getStatusAkademikById(akademikId);
+async function showStatusAkademikByMhsId(accoundId) {
+  const mhsId = await findMahasiswaIdByAccountId(accoundId);
+  const result = await getStatusAkademikByMhsId(mhsId.id_mhs);
+  console.log(mhsId);
+
   if (!result) {
     throw new ConflictError("Data akademik tidak ditemukan");
   }
@@ -103,7 +106,7 @@ async function editStatusAkademik(accountId, rincian, status, akademikId) {
 export {
   showAkademik,
   showAkademikById,
-  showStatusAkademikById,
+  showStatusAkademikByMhsId,
   saveAkademik,
   editAkademik,
   editStatusAkademik,
