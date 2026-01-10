@@ -17,21 +17,37 @@ async function getPerpustakaanById(perpusId) {
   return result;
 }
 
-async function addPerpustakaan(dokumen_perpus) {
-  await sibema.query("INSERT INTO perpustakaan (dokumen_perpus) VALUES ($1)", [
-    dokumen_perpus,
-  ]);
+async function addPerpustakaan(mhsId, dokumen_perpus) {
+  await sibema.query(
+    "INSERT INTO perpustakaan (id_mhs, dokumen_perpus) VALUES ($1, $2)",
+    [mhsId, dokumen_perpus]
+  );
 }
 
-async function updatePerpustakaan(dokumen_perpus, perpusId) {
+async function updatePerpustakaan(mhsId, dokumen_perpus, perpusId) {
   await sibema.query(
     `
         UPDATE perpustakaan
         SET
-        dokumen_perpus = $1
-        WHERE id_perpus = $2    
+        id_mhs = $1,
+        dokumen_perpus = $2
+        WHERE id_perpus = $3    
     `,
-    [dokumen_perpus, perpusId]
+    [mhsId, dokumen_perpus, perpusId]
+  );
+}
+
+async function updateStatusPerpustakaan(pegawaiId, rincian, status, perpusId) {
+  await sibema.query(
+    `
+    UPDATE perpustakaan
+    SET
+    id_pegawai = $1,
+    rincian = $2,
+    status = $3
+    WHERE id_perpus = $4  
+  `,
+    [pegawaiId, rincian, status, perpusId]
   );
 }
 
@@ -40,4 +56,5 @@ export {
   getPerpustakaanById,
   addPerpustakaan,
   updatePerpustakaan,
+  updateStatusPerpustakaan,
 };
