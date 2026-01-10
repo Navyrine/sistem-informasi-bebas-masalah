@@ -1,7 +1,17 @@
 import sibema from "../config/sibema.js";
 
 async function getPerpustakaan() {
-  const query = await sibema.query("SELECT * FROM perpustakaan");
+  const query = await sibema.query(`
+    SELECT
+    perpustakaan.id_perpus,
+    mahasiswa.id_mhs,
+    nama_mhs,
+    dokumen_perpus,
+    rincian,
+    perpustakaan.status
+    FROM perpustakaan
+    LEFT JOIN mahasiswa ON perpustakaan.id_mhs = mahasiswa.id_mhs;  
+  `);
   const result = query.rows;
 
   return result;
@@ -9,8 +19,41 @@ async function getPerpustakaan() {
 
 async function getPerpustakaanById(perpusId) {
   const query = await sibema.query(
-    "SELECT * FROM perpustakaan WHERE id_perpus = $1",
+    `
+    SELECT
+    perpustakaan.id_perpus,
+    pegawai.id_pegawai,
+    mahasiswa.id_mhs,
+    nama_pegawai,
+    nama_mhs,
+    dokumen_perpus,
+    perpustakaan.rincian,
+    perpustakaan.status
+    FROM perpustakaan
+    LEFT JOIN pegawai ON perpustakaan.id_pegawai = pegawai.id_pegawai
+    LEFT JOIN mahasiswa ON perpustakaan.id_mhs = mahasiswa.id_mhs
+    WHERE perpustakaan.id_perpus = $1
+  `,
     [perpusId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
+async function getStatusPerpustakaanByMhsId(mhsId) {
+  const query = await sibema.query(
+    `
+    SELECT
+    perpustakaan.id_perpus,
+    perpustakaan.id_mhs,
+    nama_mhs,
+    perpustakaan.status
+    FROM perpustakaan
+    LEFT JOIN mahasiswa ON perpustakaan.id_mhs = mahasiswa.id_mhs
+    WHERE perpustakaan.id_mhs = $1
+  `,
+    [mhsId]
   );
   const result = query.rows[0];
 
@@ -54,6 +97,7 @@ async function updateStatusPerpustakaan(pegawaiId, rincian, status, perpusId) {
 export {
   getPerpustakaan,
   getPerpustakaanById,
+  getStatusPerpustakaanByMhsId,
   addPerpustakaan,
   updatePerpustakaan,
   updateStatusPerpustakaan,

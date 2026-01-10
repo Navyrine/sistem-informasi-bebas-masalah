@@ -4,6 +4,7 @@ import { findPegawaiIdByAccountId } from "../model/pegawaiModel.js";
 import {
   getPerpustakaan,
   getPerpustakaanById,
+  getStatusPerpustakaanByMhsId,
   addPerpustakaan,
   updatePerpustakaan,
   updateStatusPerpustakaan,
@@ -22,6 +23,17 @@ async function showPerpustakaanById(perpusId) {
   const result = await getPerpustakaanById(perpusId);
   if (!result) {
     throw new ConflictError("Data perpustakaan tidak ditemukan");
+  }
+
+  return result;
+}
+
+async function showPerpustakaanStatusByMhsId(accountId) {
+  const mhsId = await findMahasiswaIdByAccountId(accountId);
+  const result = await getStatusPerpustakaanByMhsId(mhsId.id_mhs);
+
+  if (!result) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
   }
 
   return result;
@@ -55,6 +67,7 @@ async function editStatusPerpustakaan(accountId, rincian, status, perpusId) {
 export {
   showPerpustakaan,
   showPerpustakaanById,
+  showPerpustakaanStatusByMhsId,
   savePerpustakaan,
   editPerpustakaan,
   editStatusPerpustakaan,

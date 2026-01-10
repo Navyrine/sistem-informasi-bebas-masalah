@@ -5,6 +5,7 @@ import authorize from "../middleware/roleMiddleware.js";
 import {
   presentPerpustakaan,
   presentPerpustakaanById,
+  presentStatusPerpustakaanByMhsId,
   newPerpustakaan,
   changePerpustakaan,
   changeStatusPerpustakaan,
@@ -19,9 +20,15 @@ perpustakaanRoute.get(
   presentPerpustakaan
 );
 perpustakaanRoute.get(
-  "/perpustakaan/:id_perpus",
+  "/perpustakaan/status",
   authenticate,
   authorize("mahasiswa"),
+  presentStatusPerpustakaanByMhsId
+);
+perpustakaanRoute.get(
+  "/perpustakaan/:id_perpus",
+  authenticate,
+  authorize("mahasiswa", "pengawas_perpustakaan"),
   presentPerpustakaanById
 );
 perpustakaanRoute.post(

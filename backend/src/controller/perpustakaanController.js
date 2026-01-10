@@ -4,6 +4,7 @@ import { getPerpustakaanById } from "../model/perpustakaanModel.js";
 import {
   showPerpustakaan,
   showPerpustakaanById,
+  showPerpustakaanStatusByMhsId,
   savePerpustakaan,
   editPerpustakaan,
   editStatusPerpustakaan,
@@ -29,6 +30,22 @@ async function presentPerpustakaanById(req, res, next) {
     perpusId = parseInt(perpusId);
 
     const result = await showPerpustakaanById(perpusId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentStatusPerpustakaanByMhsId(req, res, next) {
+  try {
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
+
+    const result = await showPerpustakaanStatusByMhsId(accountId);
     return res.status(200).json({
       status: 200,
       data: result,
@@ -122,7 +139,7 @@ async function changeStatusPerpustakaan(req, res, next) {
     perpusId = parseInt(perpusId);
     accountId = parseInt(accountId);
     rincian = rincian.trim();
-    status = status.trim();
+    status = status.toLowerCase().trim();
 
     await editStatusPerpustakaan(accountId, rincian, status, perpusId);
     return res.status(200).json({
@@ -138,6 +155,7 @@ async function changeStatusPerpustakaan(req, res, next) {
 export {
   presentPerpustakaan,
   presentPerpustakaanById,
+  presentStatusPerpustakaanByMhsId,
   newPerpustakaan,
   changePerpustakaan,
   changeStatusPerpustakaan,
