@@ -7,6 +7,7 @@ import {
   presentKeuanganById,
   newKeuangan,
   changeKeuangan,
+  changeStatusKeuangan,
 } from "../controller/keuanganController.js";
 
 const keuanganRoute = express.Router();
@@ -14,13 +15,13 @@ const keuanganRoute = express.Router();
 keuanganRoute.get(
   "/keuangan",
   authenticate,
-  authorize("mahasiswa"),
+  authorize("mahasiswa", "pengawas_keuangan"),
   presentKeuangan
 );
 keuanganRoute.get(
   "/keuangan/:id_keuangan",
   authenticate,
-  authorize("mahasiswa"),
+  authorize("mahasiswa", "pengawas_keuangan"),
   presentKeuanganById
 );
 keuanganRoute.post(
@@ -36,6 +37,12 @@ keuanganRoute.put(
   authorize("mahasiswa"),
   handleFileKeuangan.single("keuangan"),
   changeKeuangan
+);
+keuanganRoute.put(
+  "/keuangan/status/:id_keuangan",
+  authenticate,
+  authorize("pengawas_keuangan"),
+  changeStatusKeuangan
 );
 
 export default keuanganRoute;

@@ -5,6 +5,7 @@ import {
   showKeuanganById,
   saveKeuangan,
   editKeuangan,
+  editStatusKeuangan,
 } from "../service/keuanganService.js";
 import { getKeuanganById } from "../model/keuanganModel.js";
 
@@ -94,4 +95,40 @@ async function changeKeuangan(req, res, next) {
   }
 }
 
-export { presentKeuangan, presentKeuanganById, newKeuangan, changeKeuangan };
+async function changeStatusKeuangan(req, res, next) {
+  try {
+    let keuanganId = req.params.id_keuangan;
+    let accountId = req.user.id;
+    let { rincian, status } = req.body;
+
+    if (!rincian) {
+      throw new BadRequestError("Rincian tidak boleh kosong");
+    }
+
+    if (!status) {
+      throw new BadRequestError("Status tidak boleh kosong");
+    }
+
+    keuanganId = parseInt(keuanganId);
+    accountId = parseInt(accountId);
+    rincian = rincian.trim();
+    status = status.trim();
+
+    await editStatusKeuangan(accountId, rincian, status, keuanganId);
+    return res.status(200).json({
+      status: 200,
+      message: "Berhasil mengubah status keuangan",
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+export {
+  presentKeuangan,
+  presentKeuanganById,
+  newKeuangan,
+  changeKeuangan,
+  changeStatusKeuangan,
+};

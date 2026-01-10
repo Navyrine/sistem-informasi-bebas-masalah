@@ -37,4 +37,24 @@ async function updateKeuangan(mhsId, dokumenKeuangan, keuanganId) {
   );
 }
 
-export { getKeuangan, getKeuanganById, addKeuangan, updateKeuangan };
+async function updateStatusKeuangan(pegawaiId, rincian, status, keuanganId) {
+  await sibema.query(
+    `
+    UPDATE keuangan
+    SET
+    id_pegawai = $1,
+    rincian = $2,
+    status = $3
+    WHERE id_keuangan = $4  
+  `,
+    [pegawaiId, rincian, status, keuanganId]
+  );
+}
+
+export {
+  getKeuangan,
+  getKeuanganById,
+  addKeuangan,
+  updateKeuangan,
+  updateStatusKeuangan,
+};
