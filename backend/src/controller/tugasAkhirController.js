@@ -2,6 +2,8 @@ import fs from "fs";
 import {
   showTugasAkhir,
   showTugasAkhirById,
+  showStatusTugasAkhirByMhsId,
+  showTugasAkhirByMhsId,
   saveTugasAkhir,
   editTugasAkhir,
   editStatusTugasAkhir,
@@ -28,6 +30,38 @@ async function presentTugasAkhirById(req, res, next) {
     taId = parseInt(taId);
 
     const result = await showTugasAkhirById(taId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentTugasAkhirByMhsId(req, res, next) {
+  try {
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
+
+    const result = await showTugasAkhirByMhsId(accountId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentStatusTugasAkhirByMhsId(req, res, next) {
+  try {
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
+
+    const result = await showStatusTugasAkhirByMhsId(accountId);
     return res.status(200).json({
       status: 200,
       data: result,
@@ -193,6 +227,8 @@ async function changeStatusTugasAkhir(req, res, next) {
 export {
   presentTugasAkhir,
   presentTugasAkhirById,
+  presentTugasAkhirByMhsId,
+  presentStatusTugasAkhirByMhsId,
   newTugasAkhir,
   changeTugasAkhir,
   changeStatusTugasAkhir,

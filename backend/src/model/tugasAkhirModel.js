@@ -1,16 +1,109 @@
 import sibema from "../config/sibema.js";
 
+// AUTHORIZATION PENGAWAS TUGAS AKHIR
 async function getTugasAkhir() {
-  const query = await sibema.query("SELECT * FROM tugas_akhir");
+  const query = await sibema.query(`
+    SELECT
+    tugas_akhir.id_ta,
+    tugas_akhir.id_mhs,
+    nama_mhs,
+    lembar_persetujuan,
+    lembar_pengesahan,
+    lembar_konsul_1,
+    lembar_konsul_2,
+    lembar_revisi,
+    tugas_akhir.rincian,
+    tugas_akhir.status
+    FROM tugas_akhir
+    LEFT JOIN mahasiswa ON tugas_akhir.id_mhs = mahasiswa.id_mhs  
+  `);
   const result = query.rows;
 
   return result;
 }
 
+// KHUSUS INI BISA DIAKSES OLEH MHS DAN PENGAWAS TUGAS AKHIR
 async function getTugasAkhirById(taId) {
   const query = await sibema.query(
-    "SELECT * FROM tugas_akhir WHERE id_ta = $1",
+    `
+    SELECT
+    tugas_akhir.id_ta,
+    tugas_akhir.id_pegawai,
+    tugas_akhir.id_mhs,
+    nama_mhs,
+    nama_pegawai,
+    lembar_persetujuan,
+    lembar_pengesahan,
+    lembar_konsul_1,
+    lembar_konsul_2,
+    lembar_revisi,
+    tugas_akhir.rincian,
+    tugas_akhir.status
+    FROM tugas_akhir
+    LEFT JOIN pegawai ON tugas_akhir.id_pegawai = pegawai.id_pegawai
+    LEFT JOIN mahasiswa ON tugas_akhir.id_mhs = mahasiswa.id_mhs
+    WHERE tugas_akhir.id_ta = $1
+  `,
     [taId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
+async function updateStatusTugasAkhir(pegawaiId, rincian, status, taId) {
+  await sibema.query(
+    `
+    UPDATE tugas_akhir
+    SET
+    id_pegawai = $1,
+    rincian = $2,
+    status = $3
+    WHERE id_ta = $4
+  `,
+    [pegawaiId, rincian, status, taId]
+  );
+}
+
+// AUTHORIZATION MAHASISWA
+async function getTugasAkhirByMhsId(mhsId) {
+  const query = await sibema.query(
+    `
+    SELECT
+    tugas_akhir.id_ta,
+    tugas_akhir.id_pegawai,
+    tugas_akhir.id_mhs,
+    nama_pegawai,
+    lembar_persetujuan,
+    lembar_pengesahan,
+    lembar_konsul_1,
+    lembar_konsul_2,
+    lembar_revisi,
+    tugas_akhir.rincian,
+    tugas_akhir.status
+    FROM tugas_akhir
+    LEFT JOIN pegawai ON tugas_akhir.id_pegawai = pegawai.id_pegawai
+    LEFT JOIN mahasiswa ON tugas_akhir.id_mhs = mahasiswa.id_mhs
+    WHERE tugas_akhir.id_mhs = $1
+  `,
+    [mhsId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
+async function getStatusTugasAkhirByMhsId(mhsId) {
+  const query = await sibema.query(
+    `
+    SELECT
+    tugas_akhir.id_ta,
+    tugas_akhir.status
+    FROM tugas_akhir
+    LEFT JOIN mahasiswa ON tugas_akhir.id_mhs = mahasiswa.id_mhs
+    WHERE tugas_akhir.id_mhs = $1  
+  `,
+    [mhsId]
   );
   const result = query.rows[0];
 
@@ -76,23 +169,11 @@ async function updateTugasAkhir(
   );
 }
 
-async function updateStatusTugasAkhir(pegawaiId, rincian, status, taId) {
-  await sibema.query(
-    `
-    UPDATE tugas_akhir
-    SET
-    id_pegawai = $1,
-    rincian = $2,
-    status = $3
-    WHERE id_ta = $4
-  `,
-    [pegawaiId, rincian, status, taId]
-  );
-}
-
 export {
   getTugasAkhir,
   getTugasAkhirById,
+  getTugasAkhirByMhsId,
+  getStatusTugasAkhirByMhsId,
   addTugasAkhir,
   updateTugasAkhir,
   updateStatusTugasAkhir,

@@ -5,6 +5,8 @@ import uploadFile from "../middleware/handleFileTugasAkhir.js";
 import {
   presentTugasAkhir,
   presentTugasAkhirById,
+  presentTugasAkhirByMhsId,
+  presentStatusTugasAkhirByMhsId,
   newTugasAkhir,
   changeTugasAkhir,
   changeStatusTugasAkhir,
@@ -12,11 +14,28 @@ import {
 
 const tugasAkhirRoute = express.Router();
 
-tugasAkhirRoute.get("/tugas-akhir", authenticate, presentTugasAkhir);
+tugasAkhirRoute.get(
+  "/tugas-akhir",
+  authenticate,
+  authorize("pengawas_tugas_akhir"),
+  presentTugasAkhir
+);
+tugasAkhirRoute.get(
+  "/tugas-akhir/mhs",
+  authenticate,
+  authorize("mahasiswa"),
+  presentTugasAkhirByMhsId
+);
+tugasAkhirRoute.get(
+  "/tugas-akhir/mhs/status/",
+  authenticate,
+  authorize("mahasiswa"),
+  presentStatusTugasAkhirByMhsId
+);
 tugasAkhirRoute.get(
   "/tugas-akhir/:id_ta",
   authenticate,
-  authorize("mahasiswa"),
+  authorize("mahasiswa", "pengawas_tugas_akhir"),
   presentTugasAkhirById
 );
 tugasAkhirRoute.post(
