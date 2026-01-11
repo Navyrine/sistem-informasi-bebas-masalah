@@ -4,6 +4,7 @@ import {
   showAkademik,
   showAkademikById,
   showStatusAkademikByMhsId,
+  showAkademikByMhsId,
   saveAkademik,
   editAkademik,
   editStatusAkademik,
@@ -12,6 +13,7 @@ import {
 async function presentAkademik(req, res, next) {
   try {
     const result = await showAkademik();
+
     return res.status(200).json({
       status: 200,
       data: result,
@@ -47,6 +49,22 @@ async function presentStatusAkademikByMhsId(req, res, next) {
     return res.status(200).json({
       status: 200,
       data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function presentAkademikByMhsId(req, res, next) {
+  try {
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
+
+    const result = await showAkademikByMhsId(accountId);
+    return res.status(200).json({
+      status: 200,
+      message: result,
     });
   } catch (err) {
     console.log(err);
@@ -241,6 +259,7 @@ export {
   presentAkademik,
   presentAkademikById,
   presentStatusAkademikByMhsId,
+  presentAkademikByMhsId,
   newAkademik,
   changeAkademik,
   changeStatusAkademik,

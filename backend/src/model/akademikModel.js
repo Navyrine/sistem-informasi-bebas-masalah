@@ -1,5 +1,6 @@
 import sibema from "../config/sibema.js";
 
+// AUTHORIZATION PENGAWAS AKADEMIK
 async function getAkademik() {
   const query = await sibema.query(`
     SELECT
@@ -23,6 +24,7 @@ async function getAkademik() {
   return result;
 }
 
+// AUTHORIZATION MAHASISWA DAN PENGAWAS AKADEMIK (KHUSUS INI)
 async function getAkademikById(akademikId) {
   const query = await sibema.query(
     `
@@ -53,6 +55,21 @@ async function getAkademikById(akademikId) {
   return result;
 }
 
+async function updateStatusAkademik(pegawaiId, rincian, status, akademikId) {
+  await sibema.query(
+    `
+    UPDATE akademik
+    SET
+    id_pegawai = $1,
+    rincian = $2,
+    status = $3
+    WHERE id_akademik = $4  
+  `,
+    [pegawaiId, rincian, status, akademikId]
+  );
+}
+
+// AUTHORIZATION MAHASISWA
 async function getStatusAkademikByMhsId(mhsId) {
   const query = await sibema.query(
     `
@@ -65,6 +82,36 @@ async function getStatusAkademikByMhsId(mhsId) {
     FROM akademik
     LEFT JOIN mahasiswa ON akademik.id_mhs = mahasiswa.id_mhs
     WHERE akademik.id_mhs = $1
+  `,
+    [mhsId]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
+async function getAkademikByMhsId(mhsId) {
+  const query = await sibema.query(
+    `
+    SELECT
+    akademik.id_akademik,
+    akademik.id_pegawai,
+    akademik.id_mhs,
+    nama_pegawai,
+    nama_mhs,
+    khs_sem_1, 
+    khs_sem_2, 
+    khs_sem_3, 
+    khs_sem_4, 
+    khs_sem_5, 
+    khs_sem_6, 
+    lembar_sp,
+    akademik.rincian,
+    akademik.status
+    FROM akademik
+    LEFT JOIN pegawai ON akademik.id_pegawai = pegawai.id_pegawai
+    LEFT JOIN mahasiswa ON akademik.id_mhs = mahasiswa.id_mhs
+    WHERE akademik.id_mhs = $1  
   `,
     [mhsId]
   );
@@ -133,24 +180,11 @@ async function updateAkademik(
   );
 }
 
-async function updateStatusAkademik(pegawaiId, rincian, status, akademikId) {
-  await sibema.query(
-    `
-    UPDATE akademik
-    SET
-    id_pegawai = $1,
-    rincian = $2,
-    status = $3
-    WHERE id_akademik = $4  
-  `,
-    [pegawaiId, rincian, status, akademikId]
-  );
-}
-
 export {
   getAkademik,
   getAkademikById,
   getStatusAkademikByMhsId,
+  getAkademikByMhsId,
   addAkademik,
   updateAkademik,
   updateStatusAkademik,

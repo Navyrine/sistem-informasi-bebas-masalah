@@ -6,6 +6,7 @@ import {
   presentAkademik,
   presentAkademikById,
   presentStatusAkademikByMhsId,
+  presentAkademikByMhsId,
   newAkademik,
   changeAkademik,
   changeStatusAkademik,
@@ -16,11 +17,17 @@ const akademikRoute = express.Router();
 akademikRoute.get(
   "/akademik",
   authenticate,
-  authorize("mahasiswa", "pengawas_akademik"),
+  authorize("pengawas_akademik"),
   presentAkademik
 );
 akademikRoute.get(
-  "/akademik/status",
+  "/akademik/mhs",
+  authenticate,
+  authorize("mahasiswa"),
+  presentAkademikByMhsId
+);
+akademikRoute.get(
+  "/akademik/mhs/status",
   authenticate,
   authorize("mahasiswa"),
   presentStatusAkademikByMhsId
@@ -28,7 +35,7 @@ akademikRoute.get(
 akademikRoute.get(
   "/akademik/:id_akademik",
   authenticate,
-  authorize("mahasiswa"),
+  authorize("mahasiswa", "pengawas_akademik"),
   presentAkademikById
 );
 akademikRoute.post(

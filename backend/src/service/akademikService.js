@@ -5,6 +5,7 @@ import {
   getAkademik,
   getAkademikById,
   getStatusAkademikByMhsId,
+  getAkademikByMhsId,
   addAkademik,
   updateAkademik,
   updateStatusAkademik,
@@ -31,10 +32,24 @@ async function showAkademikById(akademikId) {
 async function showStatusAkademikByMhsId(accoundId) {
   const mhsId = await findMahasiswaIdByAccountId(accoundId);
   const result = await getStatusAkademikByMhsId(mhsId.id_mhs);
-  console.log(mhsId);
+
+  if (!mhsId) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
+  }
 
   if (!result) {
     throw new ConflictError("Data akademik tidak ditemukan");
+  }
+
+  return result;
+}
+
+async function showAkademikByMhsId(accountId) {
+  const mhsId = await findMahasiswaIdByAccountId(accountId);
+  const result = await getAkademikByMhsId(mhsId.id_mhs);
+
+  if (!result) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
   }
 
   return result;
@@ -51,6 +66,10 @@ async function saveAkademik(
   lembarSp
 ) {
   const mhsId = await findMahasiswaIdByAccountId(accountId);
+  if (!mhsId) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
+  }
+
   await addAkademik(
     mhsId.id_mhs,
     khsSem1,
@@ -74,12 +93,18 @@ async function editAkademik(
   lembarSp,
   akademikId
 ) {
+  const existingAkademikByAkademikId = await getAkademikById(akademikId);
   const mhsId = await findMahasiswaIdByAccountId(accountId);
-  const existingAkademik = await getAkademikById(akademikId);
+  const existingAkademikByMhsId = await getAkademikByMhsId(mhsId.id_mhs);
 
-  if (!existingAkademik) {
+  if (!existingAkademikByAkademikId) {
     throw new ConflictError("Data akademik tidak ditemukan");
   }
+
+  if (!existingAkademikByMhsId) {
+    throw new ConflictError("Data akademik tidak ditemukan");
+  }
+
   await updateAkademik(
     mhsId.id_mhs,
     khsSem1,
@@ -94,12 +119,17 @@ async function editAkademik(
 }
 
 async function editStatusAkademik(accountId, rincian, status, akademikId) {
-  const pegawaiId = await findPegawaiIdByAccountId(accountId);
   const existingAkademik = await getAkademikById(akademikId);
+  const pegawaiId = await findPegawaiIdByAccountId(accountId);
+
+  if (!pegawaiId) {
+    throw new ConflictError("Data pegawai tidak ditemukan");
+  }
 
   if (!existingAkademik) {
     throw new ConflictError("Data akademik tidak ditemukan");
   }
+
   await updateStatusAkademik(pegawaiId.id_pegawai, rincian, status, akademikId);
 }
 
@@ -107,6 +137,7 @@ export {
   showAkademik,
   showAkademikById,
   showStatusAkademikByMhsId,
+  showAkademikByMhsId,
   saveAkademik,
   editAkademik,
   editStatusAkademik,

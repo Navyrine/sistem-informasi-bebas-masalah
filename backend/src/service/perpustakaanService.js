@@ -97,6 +97,10 @@ async function editStatusPerpustakaan(accountId, rincian, status, perpusId) {
     throw new ConflictError("Data perpustakaan tidak ditemukan");
   }
 
+  if (!pegawaiId) {
+    throw new ConflictError("Data pegawai tidak ditemukan");
+  }
+
   await updateStatusPerpustakaan(
     pegawaiId.id_pegawai,
     rincian,
