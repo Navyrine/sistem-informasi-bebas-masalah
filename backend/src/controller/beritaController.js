@@ -6,6 +6,7 @@ import {
   editBerita,
   removeBerita,
 } from "../service/beritaService.js";
+import BadRequestError from "../error/BadRequestError.js";
 
 async function presentBerita(req, res, next) {
   try {
@@ -24,7 +25,10 @@ async function presentBeritaById(req, res, next) {
     beritaId = parseInt(beritaId);
 
     const result = await showBeritaById(beritaId);
-    return res.status(200).json({ status: 200, data: result });
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
   } catch (err) {
     console.log(err);
     next(err);
@@ -55,9 +59,10 @@ async function newBerita(req, res, next) {
     konten = konten.trim();
 
     await saveBerita(accountId, judul, konten, gambarPath);
-    return res
-      .status(201)
-      .json({ status: 201, message: "Berhasil menambahkan berita" });
+    return res.status(201).json({
+      status: 201,
+      message: "Berhasil menambahkan berita",
+    });
   } catch (err) {
     if (req.file) {
       fs.unlink(req.file.path, (unlinkErr) => {
@@ -77,7 +82,6 @@ async function changeBerita(req, res, next) {
     let accountId = req.user.id;
     let beritaId = req.params.id_berita;
     let { judul, konten } = req.body;
-    let existingBerita = await showBeritaById(beritaId);
     let gambarPath = req.file ? req.file.path : null;
 
     if (!judul) {
@@ -88,12 +92,8 @@ async function changeBerita(req, res, next) {
       throw new BadRequestError("Konten tidak boleh kosong");
     }
 
-    if (!existingBerita) {
-      throw new ConflictError("Data berita tidak ditemukan");
-    }
-
     if (!req.file) {
-      gambarPath = existingBerita.gambar;
+      throw new BadRequestError("Gambar tidak boleh kosong");
     }
 
     accountId = parseInt(accountId);
@@ -102,15 +102,6 @@ async function changeBerita(req, res, next) {
     beritaId = parseInt(beritaId);
 
     await editBerita(accountId, judul, konten, gambarPath, beritaId);
-
-    if (req.file && existingBerita.gambar) {
-      fs.unlink(existingBerita.gambar, (error) => {
-        if (error) {
-          console.log("Gagal menghapus gambar lama: ", error);
-        }
-      });
-    }
-
     return res
       .status(200)
       .json({ status: 200, message: "Berhasil mengubah data berita" });

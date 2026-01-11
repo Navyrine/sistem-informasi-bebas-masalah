@@ -28,15 +28,34 @@ async function showBeritaById(beritaId) {
 
 async function saveBerita(accountId, judul, konten, gambar) {
   const pegawaiId = await findPegawaiIdByAccountId(accountId);
+  if (!pegawaiId) {
+    throw new ConflictError("Data pegawai tidak ditemukan");
+  }
+
   await addBerita(pegawaiId.id_pegawai, judul, konten, gambar);
 }
 
 async function editBerita(accountId, judul, konten, gambar, beritaId) {
+  const existingBerita = await getBeritaById(beritaId);
   const pegawaiId = await findPegawaiIdByAccountId(accountId);
+
+  if (!existingBerita) {
+    throw new ConflictError("Data berita tidak ditemukan");
+  }
+
+  if (!pegawaiId) {
+    throw new ConflictError("Data pegawai tidak ditemukan");
+  }
+
   await updateBerita(pegawaiId.id_pegawai, judul, konten, gambar, beritaId);
 }
 
 async function removeBerita(beritaId) {
+  const existingBerita = await getBeritaById(beritaId);
+  if (!existingBerita) {
+    throw new ConflictError("Data berita tidak ditemukan");
+  }
+
   await deleteBerita(beritaId);
 }
 

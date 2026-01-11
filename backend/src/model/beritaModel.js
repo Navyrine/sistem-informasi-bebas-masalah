@@ -1,7 +1,17 @@
 import sibema from "../config/sibema.js";
 
 async function getBerita() {
-  const query = await sibema.query("SELECT * FROM berita");
+  const query = await sibema.query(`
+    SELECT
+    berita.id_berita,
+    berita.id_pegawai,
+    nama_pegawai,
+    judul,
+    konten,
+    gambar
+    FROM berita
+    LEFT JOIN pegawai ON berita.id_pegawai = pegawai.id_pegawai  
+  `);
   const result = query.rows;
 
   return result;
@@ -9,7 +19,18 @@ async function getBerita() {
 
 async function getBeritaById(beritaId) {
   const query = await sibema.query(
-    "SELECT * FROM berita WHERE id_berita = $1",
+    `
+    SELECT
+    berita.id_berita,
+    berita.id_pegawai,
+    nama_pegawai,
+    judul,
+    konten,
+    gambar
+    FROM berita
+    LEFT JOIN pegawai ON berita.id_pegawai = pegawai.id_pegawai
+    WHERE berita.id_berita = $1  
+  `,
     [beritaId]
   );
   const result = query.rows[0];
