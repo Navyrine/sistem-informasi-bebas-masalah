@@ -1,5 +1,7 @@
 import {
   getJurusan,
+  getJurusanById,
+  getNamaJurusanByNama,
   addJurusan,
   updateJurusan,
 } from "../model/jurusanModel.js";
@@ -8,33 +10,45 @@ import BadRequetError from "../error/BadRequestError.js";
 
 async function showJurusan() {
   const result = await getJurusan();
-
   if (result.length === 0) {
     throw new ConflictError("Data jurusan tidak ditemukan");
-  } else {
-    return result;
   }
+
+  return result;
+}
+
+async function showJurusanById(jurusanId) {
+  const result = await getJurusanById(jurusanId);
+  if (!result) {
+    throw new ConflictError("Data jurusan tidak ditemukan");
+  }
+
+  return result;
 }
 
 async function saveJurusan(namaJurusan) {
-  if (!namaJurusan) {
-    throw new BadRequetError("nama jurusan wajib diisi");
-  }
+  const existingJurusan = await getJurusan();
 
-  namaJurusan = namaJurusan.trim();
+  if (existingJurusan.length > 0) {
+    throw new ConflictError("Jurusan telah terdaftar");
+  }
 
   await addJurusan(namaJurusan);
 }
 
 async function editJurusan(jurusanId, namaJurusan) {
-  if (!jurusanId || !namaJurusan) {
-    throw new BadRequetError("id jurusan atau nama jurusan wajib diisi");
+  const existingJurusan = await getNamaJurusanByNama(namaJurusan);
+  const existingJurusanById = await getJurusanById(jurusanId);
+
+  if (!existingJurusanById) {
+    throw new ConflictError("Data jurusan tidak ditemukan");
   }
 
-  jurusanId = parseInt(jurusanId);
-  namaJurusan = namaJurusan.trim();
+  if (existingJurusan && existingJurusan.id_jurusan !== existingJurusanById) {
+    throw new ConflictError("Data jurusan telah terdaftar");
+  }
 
   await updateJurusan(jurusanId, namaJurusan);
 }
 
-export { showJurusan, saveJurusan, editJurusan };
+export { showJurusan, showJurusanById, saveJurusan, editJurusan };

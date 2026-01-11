@@ -1,5 +1,7 @@
+import BadRequestError from "../error/BadRequestError.js";
 import {
   showJurusan,
+  showJurusanById,
   saveJurusan,
   editJurusan,
 } from "../service/jurusanService.js";
@@ -18,10 +20,30 @@ async function presentJurusan(req, res, next) {
   }
 }
 
+async function presentJurusanById(req, res, next) {
+  try {
+    let jurusanId = req.params.id_jurusan;
+    jurusanId = parseInt(jurusanId);
+
+    const result = await showJurusanById(jurusanId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
 async function newJurusan(req, res, next) {
   try {
-    const nama_jurusan = req.body.nama_jurusan;
+    let nama_jurusan = req.body.nama_jurusan;
+    if (!nama_jurusan) {
+      throw new BadRequestError("Nama jurusan tidak boleh kosong");
+    }
 
+    nama_jurusan = nama_jurusan.trim();
     await saveJurusan(nama_jurusan);
     return res.status(201).json({
       status: 201,
@@ -35,10 +57,17 @@ async function newJurusan(req, res, next) {
 
 async function changeJurusan(req, res, next) {
   try {
-    const id_jurusan = req.params.id_jurusan;
-    const nama_jurusan = req.body.nama_jurusan;
+    let jurusanId = req.params.id_jurusan;
+    let nama_jurusan = req.body.nama_jurusan;
 
-    await editJurusan(id_jurusan, nama_jurusan);
+    if (!nama_jurusan) {
+      throw new BadRequestError("Nama jurusan tidak boleh kosong");
+    }
+
+    jurusanId = parseInt(jurusanId);
+    nama_jurusan = nama_jurusan.trim();
+
+    await editJurusan(jurusanId, nama_jurusan);
     return res.status(201).json({
       status: 201,
       message: "Berhasil memperbarui jurusan",
@@ -49,4 +78,4 @@ async function changeJurusan(req, res, next) {
   }
 }
 
-export { presentJurusan, newJurusan, changeJurusan };
+export { presentJurusan, presentJurusanById, newJurusan, changeJurusan };
