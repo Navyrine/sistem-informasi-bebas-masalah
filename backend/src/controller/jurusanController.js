@@ -12,7 +12,7 @@ async function presentJurusan(req, res, next) {
       status: 200,
       data: result,
     });
-  } catch (error) {
+  } catch (err) {
     console.log(err);
     next(err);
   }
