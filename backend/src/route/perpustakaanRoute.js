@@ -6,6 +6,7 @@ import {
   presentPerpustakaan,
   presentPerpustakaanById,
   presentStatusPerpustakaanByMhsId,
+  presentPerpustakaanByMhsId,
   newPerpustakaan,
   changePerpustakaan,
   changeStatusPerpustakaan,
@@ -16,11 +17,17 @@ const perpustakaanRoute = express.Router();
 perpustakaanRoute.get(
   "/perpustakaan",
   authenticate,
-  authorize("mahasiswa", "pengawas_perpustakaan"),
+  authorize("pengawas_perpustakaan"),
   presentPerpustakaan
 );
 perpustakaanRoute.get(
-  "/perpustakaan/status",
+  "/perpustakaan/mhs",
+  authenticate,
+  authorize("mahasiswa"),
+  presentPerpustakaanByMhsId
+);
+perpustakaanRoute.get(
+  "/perpustakaan/mhs/status",
   authenticate,
   authorize("mahasiswa"),
   presentStatusPerpustakaanByMhsId

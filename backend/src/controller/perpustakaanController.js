@@ -5,6 +5,7 @@ import {
   showPerpustakaan,
   showPerpustakaanById,
   showPerpustakaanStatusByMhsId,
+  showPerpustakaanByMhsId,
   savePerpustakaan,
   editPerpustakaan,
   editStatusPerpustakaan,
@@ -56,14 +57,30 @@ async function presentStatusPerpustakaanByMhsId(req, res, next) {
   }
 }
 
-async function newPerpustakaan(req, res, next) {
+async function presentPerpustakaanByMhsId(req, res, next) {
   try {
     let accountId = req.user.id;
-    const perpusFilePath = req.file ? req.file.path : null;
+    accountId = parseInt(accountId);
 
+    const result = await showPerpustakaanByMhsId(accountId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
+async function newPerpustakaan(req, res, next) {
+  try {
     if (!req.file) {
       throw new BadRequestError("Dokumen perpus tidak boleh kosong");
     }
+
+    let accountId = req.user.id;
+    const perpusFilePath = req.file ? req.file.path : null;
 
     accountId = parseInt(accountId);
     await savePerpustakaan(accountId, perpusFilePath);
@@ -87,14 +104,14 @@ async function newPerpustakaan(req, res, next) {
 
 async function changePerpustakaan(req, res, next) {
   try {
+    if (!req.file) {
+      throw new BadRequestError("Dokumen perpustakaan tidak boleh kosong");
+    }
+
     let perpusId = req.params.id_perpus;
     let accountId = req.user.id;
     const perpusFilePath = req.file ? req.file.path : null;
     const existingPerpus = getPerpustakaanById(perpusId);
-
-    if (!req.file) {
-      throw new BadRequestError("Dokumen perpustakaan tidak boleh kosong");
-    }
 
     perpusId = parseInt(perpusId);
     accountId = parseInt(accountId);
@@ -156,6 +173,7 @@ export {
   presentPerpustakaan,
   presentPerpustakaanById,
   presentStatusPerpustakaanByMhsId,
+  presentPerpustakaanByMhsId,
   newPerpustakaan,
   changePerpustakaan,
   changeStatusPerpustakaan,
