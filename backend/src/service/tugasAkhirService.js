@@ -67,13 +67,13 @@ async function saveTugasAkhir(
   lembarKonsul2,
   lembarRevisi
 ) {
-  const mshId = await findMahasiswaIdByAccountId(accountId);
+  const mhsId = await findMahasiswaIdByAccountId(accountId);
   if (!mhsId) {
     throw new ConflictError("Data mahasiswa tidak ditemukan");
   }
 
   await addTugasAkhir(
-    mshId.id_mhs,
+    mhsId.id_mhs,
     lembarPersetujuan,
     lembarPengesahan,
     lembarKonsul1,

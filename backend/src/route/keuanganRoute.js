@@ -6,6 +6,7 @@ import {
   presentKeuangan,
   presentStatusKeuanganByMhsId,
   presentKeuanganById,
+  presentKeuanganByMhsId,
   newKeuangan,
   changeKeuangan,
   changeStatusKeuangan,
@@ -16,11 +17,17 @@ const keuanganRoute = express.Router();
 keuanganRoute.get(
   "/keuangan",
   authenticate,
-  authorize("mahasiswa", "pengawas_keuangan"),
+  authorize("pengawas_keuangan"),
   presentKeuangan
 );
 keuanganRoute.get(
-  "/keuangan/status",
+  "/keuangan/mhs",
+  authenticate,
+  authorize("mahasiswa"),
+  presentKeuanganByMhsId
+);
+keuanganRoute.get(
+  "/keuangan/mhs/status",
   authenticate,
   authorize("mahasiswa"),
   presentStatusKeuanganByMhsId

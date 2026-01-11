@@ -3,6 +3,7 @@ import BadRequestError from "../error/BadRequestError.js";
 import {
   showKeuangan,
   showKeuanganById,
+  showKeuanganByMhsId,
   showStatusKeuanganByMhsId,
   saveKeuangan,
   editKeuangan,
@@ -50,16 +51,33 @@ async function presentKeuanganById(req, res, next) {
   }
 }
 
+async function presentKeuanganByMhsId(req, res, next) {
+  try {
+    let accountId = req.user.id;
+    accountId = parseInt(accountId);
+
+    let result = await showKeuanganByMhsId(accountId);
+    return res.status(200).json({
+      status: 200,
+      data: result,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+}
+
 async function newKeuangan(req, res, next) {
   try {
-    const keuanganPath = req.file ? req.file.path : null;
-    let accountId = req.user.id;
-
-    if (!keuanganPath) {
+    if (!req.file) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
 
+    const keuanganPath = req.file ? req.file.path : null;
+    let accountId = req.user.id;
+
     accountId = parseInt(accountId);
+
     await saveKeuangan(accountId, keuanganPath);
     return res
       .status(201)
@@ -80,18 +98,18 @@ async function newKeuangan(req, res, next) {
 
 async function changeKeuangan(req, res, next) {
   try {
-    let keuanganId = req.params.id_keuangan;
-    const keuanganPath = req.file ? req.file.path : null;
-    const existingKeuangan = getKeuanganById(keuanganId);
-    let accountId = req.user.id;
-
-    if (!keuanganPath) {
+    if (!req.file) {
       throw new BadRequestError("File keuangan tidak boleh kosong");
     }
+
+    let keuanganId = req.params.id_keuangan;
+    let accountId = req.user.id;
+    const keuanganPath = req.file ? req.file.path : null;
 
     accountId = parseInt(accountId);
     keuanganId = parseInt(keuanganId);
 
+    const existingKeuangan = getKeuanganById(keuanganId);
     await editKeuangan(accountId, keuanganPath, keuanganId);
 
     if (req.file && existingKeuangan.dokumen_keuangan) {
@@ -149,6 +167,7 @@ export {
   presentKeuangan,
   presentStatusKeuanganByMhsId,
   presentKeuanganById,
+  presentKeuanganByMhsId,
   newKeuangan,
   changeKeuangan,
   changeStatusKeuangan,
