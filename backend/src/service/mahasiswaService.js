@@ -1,11 +1,17 @@
 import ConflictError from "../error/ConflictError.js";
-import BadRequestError from "../error/BadRequestError.js";
 import { getProdiId } from "../model/prodiModel.js";
+import { getStatusTugasAkhirByMhsId } from "../model/tugasAkhirModel.js";
+import { getStatusKeuanganByMhsId } from "../model/keuanganModel.js";
+import { getStatusPerpustakaanByMhsId } from "../model/perpustakaanModel.js";
+import { getStatusAkademikByMhsId } from "../model/akademikModel.js";
 import {
   getMahasiswa,
   getMahasiswabyId,
   addMahasiswa,
   updateMahasiswa,
+  updateStatusMahasiswa,
+  findMahasiswaIdByAccountId,
+  findMahasiswaByNimExceptId,
   deleteMahasiswa,
 } from "../model/mahasiswaModel.js";
 
@@ -19,11 +25,61 @@ async function showMahasiswa() {
   return result;
 }
 
-async function showMahasiswaById(idMhs) {
-  const result = await getMahasiswabyId(idMhs);
-
+async function showMahasiswaById(mhsId) {
+  const result = await getMahasiswabyId(mhsId);
   if (!result) {
     throw new ConflictError("Data mahasiswa tidak ada");
+  }
+
+  return result;
+}
+
+async function showProfileMahasiswa(accountId) {
+  const mhsId = await findMahasiswaIdByAccountId(accountId);
+  if (!mhsId) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
+  }
+
+  const result = await getMahasiswabyId(mhsId.id_mhs);
+  if (!result) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
+  }
+
+  const statusTugasAkhir = await getStatusTugasAkhirByMhsId(mhsId.id_mhs);
+  const statusKeuangan = await getStatusKeuanganByMhsId(mhsId.id_mhs);
+  const statusPerpustakaan = await getStatusPerpustakaanByMhsId(mhsId.id_mhs);
+  const statusAkademik = await getStatusAkademikByMhsId(mhsId.id_mhs);
+
+  if (!statusTugasAkhir) {
+    throw new ConflictError("Data tugas akhir tidak ditemukan");
+  }
+
+  if (!statusKeuangan) {
+    throw new ConflictError("Data keuangan tidak ditemukan");
+  }
+
+  if (!statusPerpustakaan) {
+    throw new ConflictError("Data perpustakaan tidak ditemukan");
+  }
+
+  if (!statusAkademik) {
+    throw new ConflictError("Data akademik tidak ditemukan");
+  }
+
+  if (
+    statusTugasAkhir.status === "bermasalah" &&
+    statusKeuangan.status === "bermasalah" &&
+    statusPerpustakaan.status === "bermasalah" &&
+    statusAkademik.status === "bermasalah"
+  ) {
+    await updateStatusMahasiswa("bermasalah", mhsId.id_mhs);
+  } else if (
+    statusTugasAkhir.status === "bebas_masalah" &&
+    statusKeuangan.status === "bebas_masalah" &&
+    statusPerpustakaan.status === "bebas_masalah" &&
+    statusAkademik.status === "bebas_masalah"
+  ) {
+    updateStatusMahasiswa("bebas_masalah", mhsId.id_mhs);
   }
 
   return result;
@@ -37,50 +93,16 @@ async function saveMahasiswa(
   alamat,
   tahunLulus
 ) {
-  if (!nim) {
-    throw new BadRequestError("Nim tidak boleh kosong");
-  }
-
-  if (nim.length > 10) {
-    throw new BadRequestError("Panjang nim tidak boleh lebih dari 10");
-  }
-
-  if (!namaProdi) {
-    throw new BadRequestError("Nama prodi tidak boleh kosong");
-  }
-
-  if (!namaMhs) {
-    throw new BadRequestError("Nama mahasiswa tidak boleh kosong");
-  }
-
-  if (!noTelp) {
-    throw new BadRequestError("Nomor telpon tidak boleh kosong");
-  }
-
-  if (noTelp.length > 13) {
-    throw new BadRequestError(
-      "Panjang nomor telepon tidak boleh lebih dari 13"
-    );
-  }
-
-  if (!alamat) {
-    throw new BadRequestError("Alamat tidak boleh kosong");
-  }
-
-  if (!tahunLulus) {
-    throw new BadRequestError("Tahun lulus tidak boleh kosong");
-  }
-
-  nim = nim.trim();
-  namaMhs = namaMhs.trim();
-  namaProdi = namaProdi.toLowerCase().trim();
-  noTelp = noTelp.trim();
-  alamat = alamat.trim();
-
   const prodiId = await getProdiId(namaProdi);
-  console.log(prodiId);
+  const existingMhsByNim = await findMahasiswaByNim(nim);
+  console.log(existingMhsByNim);
+
   if (!prodiId) {
     throw new ConflictError("Data prodi tidak ditemukan");
+  }
+
+  if (existingMhsByNim) {
+    throw new ConflictError("Nim mahasiswa telah terdaftar");
   }
 
   await addMahasiswa(
@@ -93,44 +115,47 @@ async function saveMahasiswa(
   );
 }
 
-async function editMahasiswa(idMhs, updateBody) {
-  const existingMhs = await getMahasiswabyId(idMhs);
+async function editMahasiswa(
+  namaProdi,
+  nim,
+  namaMhs,
+  noTelp,
+  alamat,
+  tahunLulus,
+  mhsId
+) {
+  const prodiId = await getProdiId(namaProdi);
+  const existingMhsById = await getMahasiswabyId(mhsId);
+  const duplicateNim = await findMahasiswaByNimExceptId(nim, mhsId);
 
-  if (!existingMhs) {
+  if (!prodiId) {
+    throw new ConflictError("Data prodi tidak ditemukan");
+  }
+
+  if (!existingMhsById) {
     throw new ConflictError("Data mahasiswa tidak ditemukan");
   }
 
-  updateBody.nama_prodi = updateBody.nama_prodi?.toLowerCase().trim();
-  updateBody.nim = updateBody.nim?.trim();
-  updateBody.nama_mhs = updateBody.nama_mhs?.trim();
-  updateBody.no_telp = updateBody.no_telp?.trim();
-  updateBody.alamat = updateBody.alamat?.trim();
-
-  let prodiId = existingMhs.id_prodi;
-
-  if (updateBody.nama_prodi) {
-    const prodi = await getProdiId(updateBody.nama_prodi);
-
-    if (!prodi) {
-      throw new ConflictError("Prodi tidak ditemukan");
-    }
-    prodiId = prodi.id_prodi;
+  if (duplicateNim) {
+    throw new ConflictError("Nim mahasiswa telah terdaftar");
   }
 
-  const updateData = {
-    id_prodi: prodiId,
-    nim: updateBody.nim ?? existingMhs.nim,
-    nama_mhs: updateBody.nama_mhs ?? existingMhs.nama_mhs,
-    no_telp: updateBody.no_telp ?? existingMhs.no_telp,
-    alamat: updateBody.alamat ?? existingMhs.alamat,
-    tahun_lulus: updateBody.tahun_lulus ?? existingMhs.tahun_lulus,
-  };
-
-  await updateMahasiswa(idMhs, updateData);
+  await updateMahasiswa(
+    prodiId.id_prodi,
+    nim,
+    namaMhs,
+    noTelp,
+    alamat,
+    tahunLulus,
+    mhsId
+  );
 }
 
 async function removeMahasiswa(mhsId) {
-  mhsId = parseInt(mhsId);
+  const existingMhsById = await getMahasiswabyId(mhsId);
+  if (!existingMhsById) {
+    throw new ConflictError("Data mahasiswa tidak ditemukan");
+  }
 
   await deleteMahasiswa(mhsId);
 }
@@ -138,6 +163,7 @@ async function removeMahasiswa(mhsId) {
 export {
   showMahasiswa,
   showMahasiswaById,
+  showProfileMahasiswa,
   saveMahasiswa,
   editMahasiswa,
   removeMahasiswa,
