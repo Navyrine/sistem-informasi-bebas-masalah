@@ -1,3 +1,4 @@
+import BadRequestError from "../error/BadRequestError.js";
 import {
   showProdi,
   showProdibyId,
@@ -22,9 +23,10 @@ async function presentProdi(req, res, next) {
 
 async function presentProdibyId(req, res, next) {
   try {
-    const id_prodi = req.params.id_prodi;
-    const result = await showProdibyId(id_prodi);
+    let prodiId = req.params.id_prodi;
+    const result = await showProdibyId(prodiId);
 
+    prodiId = parseInt(prodiId);
     return res.status(200).json({
       status: 200,
       data: result,
@@ -37,7 +39,18 @@ async function presentProdibyId(req, res, next) {
 
 async function newProdi(req, res, next) {
   try {
-    const { nama_jurusan, nama_prodi } = req.body;
+    let { nama_jurusan, nama_prodi } = req.body;
+
+    if (!nama_jurusan) {
+      throw new BadRequestError("Nama jurusan tidak boleh kosong");
+    }
+
+    if (!nama_prodi) {
+      throw new BadRequestError("Nama prodi tidak boleh kosong");
+    }
+
+    nama_jurusan = nama_jurusan.trim();
+    nama_prodi = nama_prodi.trim();
 
     await saveProdi(nama_jurusan, nama_prodi);
     return res.status(200).json({
@@ -52,10 +65,23 @@ async function newProdi(req, res, next) {
 
 async function changeProdi(req, res, next) {
   try {
-    const id_prodi = req.params.id_prodi;
-    const updateBody = req.body;
+    let prodiId = req.params.id_prodi;
+    let namaJurusan = req.body.nama_jurusan;
+    let namaProdi = req.body.nama_prodi;
 
-    await editProdi(id_prodi, updateBody);
+    if (!namaJurusan) {
+      throw new BadRequestError("Nama jurusan tidak boleh kosong");
+    }
+
+    if (!namaProdi) {
+      throw BadRequestError("Nama prodi tidak boleh kosong");
+    }
+
+    prodiId = parseInt(prodiId);
+    namaJurusan = namaJurusan.trim();
+    namaProdi = namaProdi.trim();
+
+    await editProdi(namaJurusan, namaProdi, prodiId);
     return res.status(200).json({
       status: 200,
       message: "Berhasil mengubah prodi",
@@ -68,9 +94,10 @@ async function changeProdi(req, res, next) {
 
 async function remove(req, res, next) {
   try {
-    const id_prodi = req.params.id_prodi;
+    let prodiId = req.params.id_prodi;
+    prodiId = parseInt(prodiId);
 
-    await removeProdi(id_prodi);
+    await removeProdi(prodiId);
     return res.status(201).json({
       status: 201,
       message: "Prodi berhasil dihapus",
