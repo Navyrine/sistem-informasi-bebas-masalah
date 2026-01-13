@@ -22,7 +22,7 @@ async function register(nama, username, email, password, role) {
   }
   try {
     let user;
-    const hash = await bcrypt.hash(password, 12);
+    const hash = await bcrypt.hash(password, parseInt(process.env.SALT_ROUND));
 
     if (role === "mahasiswa") {
       user = await findMahasiswaId(nama);
@@ -95,7 +95,7 @@ async function refresh(refreshToken) {
     role: decoded.role,
   });
 
-  return { newAccessToken };
+  return newAccessToken;
 }
 
 async function logout(refreshToken) {

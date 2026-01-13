@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import errorHandler from "./src/middleware/errorHandle.js";
 import jurusanRouter from "./src/route/jurusanRoute.js";
 import prodiRouter from "./src/route/prodiRoute.js";
@@ -16,9 +17,15 @@ import authRoute from "./src/route/authRoute.js";
 
 const app = express();
 
-app.use(express.json());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(express.json());
 
 app.use("/", jurusanRouter);
 app.use("/", prodiRouter);

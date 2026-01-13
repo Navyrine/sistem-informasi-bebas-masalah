@@ -54,12 +54,15 @@ async function loginAccount(req, res, next) {
     const { accessToken, refreshToken } = await login(username, password);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: parseInt(process.env.MAX_AGE_COOKIE),
     });
 
-    return res.status(200).json({ status: 200, access_token: accessToken });
+    return res.status(200).json({
+      status: 200,
+      access_token: accessToken,
+    });
   } catch (err) {
     console.log(err);
     next(err);
@@ -71,7 +74,10 @@ async function refreshToken(req, res, next) {
     const refreshToken = req.cookies.refreshToken;
     const accessToken = await refresh(refreshToken);
 
-    return res.status(200).json({ status: 200, accessToken });
+    return res.status(200).json({
+      status: 200,
+      new_access_token: accessToken,
+    });
   } catch (err) {
     console.log(err);
     next(err);
