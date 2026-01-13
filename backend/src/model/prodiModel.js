@@ -50,6 +50,16 @@ async function getAllNamaProdi() {
   return result;
 }
 
+async function getNamaProdiByNama(namaProdi) {
+  const query = await sibema.query(
+    "SELECT nama_prodi FROM prodi WHERE LOWER(TRIM(nama_prodi)) = LOWER(TRIM($1))",
+    [namaProdi]
+  );
+  const result = query.rows[0];
+
+  return result;
+}
+
 async function addProdi(jurusanId, namaProdi) {
   await sibema.query(
     "INSERT INTO prodi (id_jurusan, nama_prodi) VALUES ($1, $2)",
@@ -74,6 +84,7 @@ export {
   getProdiById,
   getProdiId,
   getAllNamaProdi,
+  getNamaProdiByNama,
   updateProdi,
   deleteProdi,
 };

@@ -4,6 +4,7 @@ import {
   getProdi,
   addProdi,
   getProdiById,
+  getNamaProdiByNama,
   updateProdi,
   deleteProdi,
 } from "../model/prodiModel.js";
@@ -37,36 +38,33 @@ async function showProdibyId(prodiId) {
 
 async function saveProdi(namaJurusan, namaProdi) {
   const jurusanId = await getJurusanId(namaJurusan);
-  const prodi = await getProdi();
+  const existingProdi = await getNamaProdiByNama(namaProdi);
 
   if (!jurusanId) {
     throw new ConflictError("Jurusan tidak ditemukan");
   }
 
-  if (prodi.length > 0) {
-    throw new ConflictError("Nama prodi sudah tersedia");
+  if (existingProdi) {
+    throw new ConflictError("Nama prodi sudah terdaftar");
   }
 
   await addProdi(jurusanId.id_jurusan, namaProdi);
 }
 
 async function editProdi(namaJurusan, namaProdi, prodiId) {
-  const existingProdi = await getProdi();
-  const existingProdiId = await getProdiById(prodiId);
   const jurusanId = await getJurusanId(namaJurusan);
+  const existingProdi = await getNamaProdiByNama(namaProdi);
+  const existingProdiById = await getProdiById(prodiId);
 
   if (!jurusanId) {
     throw new ConflictError("Data jurusan tidak ditemukan");
   }
 
-  if (!existingProdi) {
+  if (!existingProdiById) {
     throw new ConflictError("Data prodi tidak ditemukan");
   }
 
-  if (
-    existingProdiId.nama_prodi &&
-    existingProdiId.id_prodi !== existingProdi
-  ) {
+  if (existingProdi) {
     throw new ConflictError("Nama prodi sudah terdaftar");
   }
 
