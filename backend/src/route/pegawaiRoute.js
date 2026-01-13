@@ -1,4 +1,6 @@
 import express from "express";
+import authenticate from "../middleware/authMiddleware.js";
+import authorize from "../middleware/roleMiddleware.js";
 import {
   presentPegawai,
   presentPegawaiById,
@@ -9,10 +11,35 @@ import {
 
 const pegawaiRouter = express.Router();
 
-pegawaiRouter.get("/pegawai", presentPegawai);
-pegawaiRouter.get("/pegawai/:id_pegawai", presentPegawaiById);
-pegawaiRouter.post("/pegawai", newPegawai);
-pegawaiRouter.put("/pegawai/:id_pegawai", changePegawai);
-pegawaiRouter.delete("/pegawai/:id_pegawai", remove);
+pegawaiRouter.get(
+  "/pegawai",
+  authenticate,
+  authorize("administrator"),
+  presentPegawai
+);
+pegawaiRouter.get(
+  "/pegawai/:id_pegawai",
+  authenticate,
+  authorize("administrator"),
+  presentPegawaiById
+);
+pegawaiRouter.post(
+  "/pegawai",
+  authenticate,
+  authorize("administrator"),
+  newPegawai
+);
+pegawaiRouter.put(
+  "/pegawai/:id_pegawai",
+  authenticate,
+  authorize("administrator"),
+  changePegawai
+);
+pegawaiRouter.delete(
+  "/pegawai/:id_pegawai",
+  authenticate,
+  authorize("administrator"),
+  remove
+);
 
 export default pegawaiRouter;

@@ -1,5 +1,4 @@
 import ConflictError from "../error/ConflictError.js";
-import BadRequestError from "../error/BadRequestError.js";
 import {
   getPegawai,
   getPegawaiById,
@@ -10,7 +9,6 @@ import {
 
 async function showPegawai() {
   const result = await getPegawai();
-
   if (result.length === 0) {
     throw new ConflictError("Data pegawai tidak ditemukan");
   }
@@ -20,8 +18,7 @@ async function showPegawai() {
 
 async function showPegawaiById(pegawaiId) {
   const result = await getPegawaiById(pegawaiId);
-
-  if (!pegawaiId) {
+  if (!result) {
     throw new ConflictError("Data pegawai tidak ditemukan");
   }
 
@@ -29,46 +26,23 @@ async function showPegawaiById(pegawaiId) {
 }
 
 async function savePegawai(namaPegawai, noTelp, alamat) {
-  if (!namaPegawai || !noTelp || !alamat) {
-    throw new BadRequestError(
-      "Nama pegawai atau no telp atau alamat tidak boleh kosong"
-    );
-  }
-
-  if (noTelp.length > 13) {
-    throw new BadRequestError("Panjang no telp tidak boleh lebih dari 13");
-  }
-
-  namaPegawai = namaPegawai.trim();
-  noTelp = noTelp.trim();
-  alamat = alamat.trim();
-
   await addPegawai(namaPegawai, noTelp, alamat);
 }
 
 async function editPegawai(pegawaiId, namaPegawai, noTelp, alamat) {
-  const existingPegawai = getPegawaiById(pegawaiId);
-
+  const existingPegawai = await getPegawaiById(pegawaiId);
   if (!existingPegawai) {
     throw new ConflictError("Data pegawai tidak ditemukan");
   }
-
-  if (!namaPegawai || !noTelp || !alamat) {
-    throw new BadRequestError(
-      "Nama pegawai atau no telp atau alamat tidak boleh kosong"
-    );
-  }
-
-  pegawaiId = parseInt(pegawaiId);
-  namaPegawai = namaPegawai.trim();
-  noTelp = noTelp.trim();
-  alamat = alamat.trim();
 
   await updatePegawai(pegawaiId, namaPegawai, noTelp, alamat);
 }
 
 async function removePegawai(pegawaiId) {
-  pegawaiId = parseInt(pegawaiId);
+  const existingPegawai = await getPegawaiById(pegawaiId);
+  if (!existingPegawai) {
+    throw new ConflictError("Data pegawai tidak ditemukan");
+  }
 
   await deletePegawai(pegawaiId);
 }
