@@ -1,3 +1,4 @@
+import ConflictError from "../error/ConflictError.js";
 import {
   getJurusan,
   getJurusanById,
@@ -5,8 +6,6 @@ import {
   addJurusan,
   updateJurusan,
 } from "../model/jurusanModel.js";
-import ConflictError from "../error/ConflictError.js";
-import BadRequetError from "../error/BadRequestError.js";
 
 async function showJurusan() {
   const result = await getJurusan();
@@ -27,9 +26,8 @@ async function showJurusanById(jurusanId) {
 }
 
 async function saveJurusan(namaJurusan) {
-  const existingJurusan = await getJurusan();
-
-  if (existingJurusan.length > 0) {
+  const existingJurusan = await getNamaJurusanByNama(namaJurusan);
+  if (existingJurusan) {
     throw new ConflictError("Jurusan telah terdaftar");
   }
 
@@ -44,7 +42,7 @@ async function editJurusan(jurusanId, namaJurusan) {
     throw new ConflictError("Data jurusan tidak ditemukan");
   }
 
-  if (existingJurusan && existingJurusan.id_jurusan !== existingJurusanById) {
+  if (existingJurusan) {
     throw new ConflictError("Data jurusan telah terdaftar");
   }
 
