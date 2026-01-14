@@ -3,6 +3,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./src/util/swagger.js";
 import errorHandler from "./src/middleware/errorHandle.js";
 import jurusanRouter from "./src/route/jurusanRoute.js";
 import prodiRouter from "./src/route/prodiRoute.js";
@@ -20,7 +22,7 @@ const app = express();
 app.use(
   cors({
     origin: true,
-    credentials: true,
+    credentials: "http://localhost:3000",
   })
 );
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +39,11 @@ app.use("/", keuanganRoute);
 app.use("/", perpustakaanRoute);
 app.use("/", akademikRoute);
 app.use("/", authRoute);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, { swaggerOptions: { withCredentials: true } })
+);
 
 app.use(errorHandler);
 app.listen(3000, () => {

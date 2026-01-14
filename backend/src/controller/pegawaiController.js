@@ -49,6 +49,10 @@ async function newPegawai(req, res, next) {
       throw new BadRequestError("No telpon tidak boleh kosong");
     }
 
+    if (no_telp.length > 13) {
+      throw new BadRequestError("Panjang no telpon tidak boleh lebih dari 13");
+    }
+
     if (!alamat) {
       throw new BadRequestError("Alamat tidak boleh kosong");
     }
@@ -79,6 +83,10 @@ async function changePegawai(req, res, next) {
 
     if (!no_telp) {
       throw new BadRequestError("No telp tidak boleh kosong");
+    }
+
+    if (no_telp.length > 13) {
+      throw new BadRequestError("Panjang no telp tidak boleh lebih dari 13");
     }
 
     if (!alamat) {

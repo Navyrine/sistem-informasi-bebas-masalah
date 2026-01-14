@@ -68,9 +68,9 @@ async function findMahasiswaIdByAccountId(accountId) {
   return result;
 }
 
-async function findMahasiswaByNimExceptId(nim, mhsId) {
+async function findMahasiswaByNim(nim, mhsId) {
   const query = await sibema.query(
-    "SELECT id_mhs, nim FROM mahasiswa WHERE LOWER(TRIM(nim)) = LOWER(TRIM($1)) AND id_mhs != $2",
+    "SELECT nim FROM mahasiswa WHERE LOWER(TRIM(nim)) = LOWER(TRIM($1)) AND id_mhs != $2",
     [nim, mhsId]
   );
   const result = query.rows[0];
@@ -137,7 +137,7 @@ export {
   getMahasiswabyId,
   findMahasiswaId,
   findMahasiswaIdByAccountId,
-  findMahasiswaByNimExceptId,
+  findMahasiswaByNim,
   addMahasiswa,
   updateMahasiswa,
   updateIdAccount,

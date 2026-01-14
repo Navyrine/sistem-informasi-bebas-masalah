@@ -11,7 +11,7 @@ import {
   updateMahasiswa,
   updateStatusMahasiswa,
   findMahasiswaIdByAccountId,
-  findMahasiswaByNimExceptId,
+  findMahasiswaByNim,
   deleteMahasiswa,
 } from "../model/mahasiswaModel.js";
 
@@ -95,7 +95,6 @@ async function saveMahasiswa(
 ) {
   const prodiId = await getProdiId(namaProdi);
   const existingMhsByNim = await findMahasiswaByNim(nim);
-  console.log(existingMhsByNim);
 
   if (!prodiId) {
     throw new ConflictError("Data prodi tidak ditemukan");
@@ -126,7 +125,7 @@ async function editMahasiswa(
 ) {
   const prodiId = await getProdiId(namaProdi);
   const existingMhsById = await getMahasiswabyId(mhsId);
-  const duplicateNim = await findMahasiswaByNimExceptId(nim, mhsId);
+  const duplicateNim = await findMahasiswaByNim(nim, mhsId);
 
   if (!prodiId) {
     throw new ConflictError("Data prodi tidak ditemukan");
