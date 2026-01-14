@@ -22,7 +22,7 @@ const app = express();
 app.use(
   cors({
     origin: true,
-    credentials: "http://localhost:3000",
+    credentials: true,
   })
 );
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -42,7 +42,14 @@ app.use("/", authRoute);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, { swaggerOptions: { withCredentials: true } })
+  swaggerUi.setup(swaggerSpec, {
+    swaggerOptions: {
+      requestInterceptor: (req) => {
+        req.withCredentials = true;
+        return req;
+      },
+    },
+  })
 );
 
 app.use(errorHandler);

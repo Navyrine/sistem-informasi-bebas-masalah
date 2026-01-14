@@ -97,28 +97,6 @@ authRoute.post(
  *         $ref: "#/components/responses/409"
  */
 authRoute.post("/login", loginAccount);
-
-/**
- * @swagger
- * /refresh-token:
- *    post:
- *      summary: Refresh token
- *      tags: [Auth]
- *      security:
- *        - cookieAuth: []
- *    responses:
- *      200:
- *        description: OK
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                new_access_token:
- *                  type: string
- *      401:
- *        $ref: "#/components/responses/401"
- */
 authRoute.post("/refresh-token", refreshToken);
 
 /**

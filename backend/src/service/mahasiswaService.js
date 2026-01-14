@@ -67,9 +67,9 @@ async function showProfileMahasiswa(accountId) {
   }
 
   if (
-    statusTugasAkhir.status === "bermasalah" &&
-    statusKeuangan.status === "bermasalah" &&
-    statusPerpustakaan.status === "bermasalah" &&
+    statusTugasAkhir.status === "bermasalah" ||
+    statusKeuangan.status === "bermasalah" ||
+    statusPerpustakaan.status === "bermasalah" ||
     statusAkademik.status === "bermasalah"
   ) {
     await updateStatusMahasiswa("bermasalah", mhsId.id_mhs);
